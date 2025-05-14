@@ -17,7 +17,7 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #0B192C;
   text-decoration: inherit;
 }
 a:hover {
@@ -62,9 +62,26 @@ button:focus-visible {
     background-color: #ffffff;
   }
   a:hover {
+    color: #0B192C;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* //dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: white;
+    background-color: #0B192C;
+  }
+  a:hover {
     color: #747bff;
   }
   button {
     background-color: #f9f9f9;
+  }
+  .burger-icon svg {
+    color: black;
   }
 }
