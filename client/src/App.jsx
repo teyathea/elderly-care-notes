@@ -1,6 +1,3 @@
-import Sidebar, {SidebarItem} from './components/Sidebar'
-import './App.css'
-import { Routes, Route, useNavigate } from 'react-router-dom'
 import Home from './components/Home'
 import Appointments from './components/Appointments'
 import NotesFeed from './components/NotesFeed'
@@ -11,10 +8,17 @@ import UsersPage from './components/UsersPage'
 import ProfileSettings from './components/ProfileSettings'
 import PatientsDetails from './components/PatientsDetails'
 
+import Sidebar, {SidebarItem} from './components/Sidebar'
+import './App.css'
+import Auth from './components/Auth'
+
+import { Routes, Route, useNavigate } from 'react-router-dom'
+
 function App() {
 
   return (
     <>
+    <Auth />
       <div className='flex h-screen'>
         <Sidebar>
           <SidebarItem to="/home" text="Home" />
