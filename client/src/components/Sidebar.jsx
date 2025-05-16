@@ -9,7 +9,7 @@ export default function Sidebar({children}){
     return(
         <>
         <aside className="h-screen">
-            <nav className="h-full flex flex-col bg-white shadow-sm">
+            <nav className="h-full flex flex-col bg-blue-100 shadow-sm">
                 <div className={`p-4 pb-2 flex bg-gradient-to-tr from-indigo-100 to-blue-400
                     ${expanded ? "justify-end" : "justify-center"}`}>
                     <div onClick={() => setExpanded(curr => !curr)} className="burger-icon cursor-pointer hover:bg-indigo-200 p-2">
@@ -38,8 +38,8 @@ export function SidebarItem({to, text}){
                 font-medium rounded-md cursor-pointer transition-colors
                 ${
                     isActive
-                        ? "bg-gradient-to-tr from-indigo-100 to-blue-400 text-green-800"
-                        : "hover:bg-indigo-200 text-gray-600"
+                        ? "bg-gradient-to-tr from-indigo-100 to-blue-400 text-indigo-800"
+                        : "hover:bg-indigo-200 text-black-600"
                 }
                 ${expanded ? "justify-start" : "justify-center"}`
             }

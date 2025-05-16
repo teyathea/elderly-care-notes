@@ -11,7 +11,7 @@ body, html {
   overflow: hidden;
 }
 
-:root {
+/* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,7 +65,7 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -83,14 +83,14 @@ button:focus-visible {
 /* //dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    color: white;
-    background-color: #0B192C;
+    /* color: white; */
+    /* background-color: #0B192C; */
   }
   a:hover {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    /* background-color: ; */
   }
   .burger-icon svg {
     color: black;
