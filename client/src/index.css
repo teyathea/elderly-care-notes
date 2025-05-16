@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+#root {
+  margin: 0px;
+  padding: 0px;
+}
+
+body, html {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
