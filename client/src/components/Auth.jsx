@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Auth = () => {
+const Auth = ({ onLogin }) => {
     const navigate = useNavigate()
 
-    const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(true); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
 
@@ -22,7 +22,8 @@ const Auth = () => {
                 password,
             });
             console.log('Login successfully:', response.data)
-            navigate('/dashboard')
+            onLogin() // check if app was logged in.
+            navigate('/home')
         } catch (error) {
             console.error('Login error', error.response?.data || error.message)
         }
