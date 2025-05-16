@@ -11,14 +11,19 @@ import PatientsDetails from './components/PatientsDetails'
 import Sidebar, {SidebarItem} from './components/Sidebar'
 import './App.css'
 import Auth from './components/Auth'
+import { useState } from 'react'
 
 import { Routes, Route, useNavigate } from 'react-router-dom'
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
 
   return (
     <>
-    <Auth />
+    {!isLoggedIn ? (
+        <Auth onLogin={() => setIsLoggedIn(true)} />
+      ) : (
       <div className='flex h-screen'>
         <Sidebar>
           <SidebarItem to="/home" text="Home" />
@@ -53,6 +58,7 @@ function App() {
 
         </main>
       </div>
+      )}
     </>
   )
 }
