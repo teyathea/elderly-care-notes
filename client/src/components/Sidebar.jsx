@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react"
-import { AlignJustify } from "lucide-react"
+import { AlignJustify, ChevronDown, ChevronRight } from "lucide-react"
 import { NavLink } from "react-router"
 
 const SidebarContext = createContext()
@@ -10,8 +10,9 @@ export default function Sidebar({children}){
         <>
         <aside className="h-screen">
             <nav className="h-full flex flex-col bg-blue-100 shadow-sm">
-                <div className={`p-4 pb-2 flex bg-gradient-to-tr from-indigo-100 to-blue-400
-                    ${expanded ? "justify-end" : "justify-center"}`}>
+                <div className={`p-4 pb-2 flex bg-gradient-to-tr from-indigo-100 to-blue-400 
+                    ${expanded ? "justify-end" : "justify-center"}`}> 
+
                     <div onClick={() => setExpanded(curr => !curr)} className="burger-icon cursor-pointer hover:bg-indigo-200 p-2">
                         <AlignJustify />  {/*Burger Menu* */}
                     </div>
@@ -27,8 +28,35 @@ export default function Sidebar({children}){
     )
 }
 
-export function SidebarItem({to, text}){
+export function SidebarItem({to, text, icon, submenu = false, children}){
     const {expanded} = useContext(SidebarContext)
+    const [isOpen, setIsOpen] = useState(false)
+
+    if (submenu) {
+        return (
+            <li className="p-0 list-none">
+                <div
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={`flex items-center justify-between gap-2 py-2 px-3 mx-1 my-1 rounded-md cursor-pointer transition-colors ${expanded ? "justify-between" : "justify-center"
+                        } hover:bg-indigo-200 text-black-600`}
+                >
+                    <div className="flex items-center gap-2">
+                        {icon}
+                        {expanded && <span>{text}</span>}
+                    </div>
+                    {expanded &&
+                        (isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />)}
+                </div>
+
+                {isOpen && (
+                    <ul className="pl-6 list-none">
+                        {children}
+                    </ul>
+                )}
+            </li>
+        )
+    }
+
     return (
         <>
         <NavLink 
@@ -44,7 +72,7 @@ export function SidebarItem({to, text}){
                 ${expanded ? "justify-start" : "justify-center"}`
             }
         >
-            {/* {icon} */}
+            {icon}
             <span
                 className={`overflow-hidden transition-all
                 ${expanded ? "w-52" : "w-0"}`}
