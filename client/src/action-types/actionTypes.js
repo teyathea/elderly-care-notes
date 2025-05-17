@@ -1,0 +1,3 @@
+export const ACTION_TYPES = {
+    SET_SIGNUP_FIELD: "SET_SIGNUP_FIELD"
+}
