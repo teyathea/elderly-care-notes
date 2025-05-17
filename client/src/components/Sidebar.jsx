@@ -10,13 +10,26 @@ export default function Sidebar({children}){
         <>
         <aside className="h-screen">
             <nav className="h-full flex flex-col bg-blue-100 shadow-sm">
+                
                 <div className={`p-4 pb-2 flex bg-gradient-to-tr from-indigo-100 to-blue-400 
-                    ${expanded ? "justify-end" : "justify-center"}`}> 
-
-                    <div onClick={() => setExpanded(curr => !curr)} className="burger-icon cursor-pointer hover:bg-indigo-200 p-2">
+                    `}> 
+                    <div className={`flex items-center gap-3 px-4 transition-all duration-300`}>
+                                <div className="w-10 h-10 rounded-full bg-blue-300 flex items-center justify-center text-white font-bold">
+                                    HR {/* insert image here */}
+                                    </div>
+                                    {expanded && (
+                                        <div className="flex flex-col transition-opacity duration-300">
+                                            <span className="font-semibold text-blue-900">Hanna Rizza</span>
+                                            <span className="text-sm text-blue-700">Caregiver</span>
+                                        </div>
+                                    )}
+                                    </div>
+                        
+                    <div onClick={() => setExpanded(curr => !curr)} className={`burger-icon cursor-pointer hover:bg-indigo-200 p-2 ${expanded ? "justify-end" : "justify-center"}` }>
                         <AlignJustify />  {/*Burger Menu* */}
                     </div>
                 </div>
+                
 
                 <SidebarContext.Provider value={{ expanded }}>
                     {children}
