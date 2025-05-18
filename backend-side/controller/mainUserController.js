@@ -12,7 +12,8 @@ const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashed = await bcrypt.hash(password, salt)
             
-        const newAdmin = new MainUser({ fullname, email, password: hashed, role: 'admin' })
+        const newAdmin = new MainUser({ fullname, email, password: hashed, role: 'admin' })  // role is default as admin
+        
         await newAdmin.save();
         res.status(201).json({ message: 'Admin registered' })
     } catch (error) {
@@ -35,6 +36,19 @@ const loginUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({message: 'Server error'})
     }
-};
+}
 
-export {registerUser, loginUser}
+const getAllUsers = async (req, res) =>{
+    try {
+        const users = await MainUser.find()
+        res.status(200).json(users)        
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetchig users",
+            error: error.message
+        })
+        
+    }
+}
+
+export {registerUser, loginUser, getAllUsers}
