@@ -1,7 +1,9 @@
 export default function Appointments() {
     return (
         <>
-        <h1>Appointments</h1>
+        {/* <h1>Appointments</h1> */}
+        
+                                            
         </>
     )
 }
