@@ -9,7 +9,8 @@ export default function SignUpForm({setIsLogin}) {
     const [state, dispatch] = useReducer(authReducer, initialState)
     const {fullname, signupEmail, signupPassword, confirmPassword, role} = state.signUpData;
 
-        const API_REGISTER_URL = import.meta.env.VITE_REGISTER_URL;
+        const API_REGISTER_URL = import.meta.env.VITE_REGISTER_URL; 
+        // http://localhost:8000/api/mainusers/register
 
         const handleInputChange = (field, value) => {
             dispatch({type: ACTION_TYPES.SET_SIGNUP_FIELD, field, value})
