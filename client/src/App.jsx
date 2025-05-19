@@ -1,6 +1,3 @@
-import { useState, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
-
 import Home from './components/Home'
 import Appointments from './components/Appointments'
 import NotesFeed from './components/NotesFeed'
@@ -12,7 +9,8 @@ import ProfileSettings from './components/ProfileSettings'
 import PatientsDetails from './components/PatientsDetails'
 import UserPage from './components/UsersPage.jsx'
 
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Sidebar, {SidebarItem} from './components/Sidebar'
 import Auth from './components/Auth'
 

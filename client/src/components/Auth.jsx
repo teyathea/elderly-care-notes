@@ -8,7 +8,7 @@ import axios from 'axios';
 const Auth = ({ onLogin }) => {
   const navigate = useNavigate();
 
-  const [isLogin, setIsLogin] = useState(true);
+  // const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
