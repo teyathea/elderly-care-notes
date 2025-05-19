@@ -12,7 +12,12 @@ const notesfeedSchema = new Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    created_by: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'MainUser', 
+        required: true},
+
 })
 
 const NotesFeed = mongoose.model('NotesFeed', notesfeedSchema) // model name is NotesFeed
