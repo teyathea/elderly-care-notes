@@ -1,16 +1,14 @@
 import express from 'express';
+import { inviteUser, acceptInvite, getAllContactUsers, deleteContactUser, updateContactUser } from '../controllers/contactUserControllers.js';
+import {authMiddleware} from '../middleware/authMiddleware.js';
 
-import { inviteUser , verifyInvite, completeSignup, loginContactUser } from '../controller/contactUser.js';
-const router = express.Router()
+const router = express.Router();
 
+router.post('/invite', authMiddleware, inviteUser);
+router.get('/accept-invite', acceptInvite);
+router.get('/', authMiddleware, getAllContactUsers);
+router.delete('/:id', authMiddleware, deleteContactUser);
+router.put('/:id', authMiddleware, updateContactUser)
 
-
-router.post('/invite', inviteUser)
-
-router.get('/verify-invite', verifyInvite)
-
-router.post('/complete-signup', completeSignup)
-
-router.post('/login', loginContactUser)
 
 export default router;
