@@ -1,0 +1,61 @@
+@import 'tailwindcss';
+
+.userPage-container {
+  @apply relative p-6 bg-gray-50 min-h-screen;
+}
+
+.add-user-button {
+  @apply absolute top-4 right-4 px-5 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 transition;
+}
+
+.table {
+  @apply w-full bg-white rounded-lg shadow mt-16 overflow-x-auto;
+}
+
+.table-header-row {
+  @apply bg-blue-100 text-left;
+}
+
+.table-header-cell {
+  @apply p-4 font-semibold text-gray-700 whitespace-nowrap text-center;
+}
+
+.table-row {
+  @apply border-t border-gray-200 hover:bg-gray-50;
+}
+
+.table-cell {
+  @apply p-4 whitespace-nowrap;
+}
+
+.restriction-cell {
+  @apply flex justify-center space-x-6;
+}
+
+.checkbox-label {
+  @apply flex items-center cursor-pointer text-sm text-gray-700;
+}
+
+.checkbox-input {
+  @apply mr-2;
+}
+
+.edit-input {
+  @apply w-full py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-400;
+}
+
+.action-button-edit {
+  @apply px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition;
+}
+
+.action-button-delete {
+  @apply px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition;
+}
+
+.action-button-save {
+  @apply px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition;
+}
+
+.action-button-cancel {
+  @apply px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500 transition;
+}
