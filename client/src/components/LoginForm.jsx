@@ -15,6 +15,9 @@ export default function LoginForm({onLogin, setIsLogin, navigate}) {
                 password,
             });
             console.log('Login successfully:', response.data)
+            if (response.data.token) {
+              localStorage.setItem('userToken', response.data.token);
+            }
             onLogin() // check if app was logged in.
             // navigate('/home')
         } catch (error) {
