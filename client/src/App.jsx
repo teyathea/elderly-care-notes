@@ -1,6 +1,3 @@
-import { useState, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
-
 import Home from './components/Home'
 import Appointments from './components/Appointments'
 import NotesFeed from './components/NotesFeed'
@@ -12,9 +9,12 @@ import ProfileSettings from './components/ProfileSettings'
 import PatientsDetails from './components/PatientsDetails'
 import UserPage from './components/UsersPage.jsx'
 
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Sidebar, {SidebarItem} from './components/Sidebar'
+import {Library, SquareActivity, ClipboardPlus, LayoutDashboard, NotepadText, CalendarPlus, UserRoundPlus, UserRoundCog, ShieldUser, Settings } from "lucide-react"
 import Auth from './components/Auth'
+import './styles/Sidebar.css'
 
 import AcceptInvite from "./components/UserPageAcceptInvite.jsx";
 
@@ -34,16 +34,20 @@ function App() {
       ) : (
       <div className='flex h-screen'>
         <Sidebar>
-          <SidebarItem to="/home" text="Home" />
-          <SidebarItem to="/notesfeed" text="Notes Feed" />
-          <SidebarItem to="/appointments" text="Appointments" />
-          <SidebarItem to="/medications" text="Medications" />
-          <SidebarItem to="/symptom-tracker" text="Symptom Tracker" />
-          <SidebarItem to="/medical-records" text="Medical Records" />
-          <SidebarItem to="/users" text="Users Account" />
-              <SidebarItem to="/profile-settings" text="Profile Settings"/>
-              <SidebarItem to="/patients-Details" text="Patients Details"/>
+          <SidebarItem to="/home" text="Dashboard" icon={<LayoutDashboard size={20}/>} />
+          <SidebarItem to="/notesfeed" text="Notes Feed" icon={<NotepadText size={20}/>} />
+          <SidebarItem to="/appointments" text="Appointments" icon={<CalendarPlus size={20}/>} />
+          <SidebarItem to="/medications" text="Medications" icon={<ClipboardPlus size={20}/>}/>
+          <SidebarItem to="/symptom-tracker" text="Symptom Tracker" icon={<SquareActivity size={20}/>}/>
+          <SidebarItem to="/medical-records" text="Medical Records" icon={<Library size={20}/>} />
+          <SidebarItem to="/users-account" text="Users Account" icon={<UserRoundPlus size={20}/>} />
+          <SidebarItem text="Settings" icon={<Settings size={20}/>} submenu>
+              <SidebarItem to="/profile-settings" text="Profile Settings" icon={<UserRoundCog size={20}/>}/>
+              <SidebarItem to="/patients-Details" text="Patients Details" icon={<ShieldUser size={20}/>}/>
+          </SidebarItem>
 
+          {/* <SidebarItem to="/home" text="Settings" />
+          <SidebarItem to="/home" text="Home" /> */}
           <div className="mt-auto px-4 pb-4">
             <button
               onClick={() => {
