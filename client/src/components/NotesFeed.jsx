@@ -1,54 +1,58 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "../styles/Global.css";
-import NoteModal from "./modals/NoteModal";
+import NoteModal from "./modals/NoteModal"; 
+import { NotesContext } from "../context/NotesContext";
+import { ACTION_TYPES } from "../action-types/actionTypes";
 
 const NotesFeed = () => {
-  const [notes, setNotes] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [currentNote, setCurrentNote] = useState({
-    id: null,
-    title: "",
-    description: "",
-  });
+  const {state, dispatch, addNotesToDb} = useContext(NotesContext)
+  const { isEdit, currentNote, showModal, notes} = state
+  // const [showModal, setShowModal] = useState(false);
+  // const [isEdit, setIsEdit] = useState(false);
+
+  // const [currentNote, setCurrentNote] = useState({
+  //   id: null,
+  //   title: "",
+  //   description: "",
+  // });
 
   // Open Add Note Modal
   const handleAddClick = () => {
-    setIsEdit(false);
-    setCurrentNote({ id: null, title: "", description: "" });
-    setShowModal(true);
+    dispatch({type: ACTION_TYPES.SET_IS_EDIT, payload: false})
+    dispatch({type: ACTION_TYPES.SET_CURRENT_NOTE, payload: {_id: null, title: "", description: ""} });
+    dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: true})
   };
 
   // Open Edit Note Modal
   const handleNoteClick = (note) => {
-    setIsEdit(true);
-    setCurrentNote(note);
-    setShowModal(true);
+    // console.log("add button")
+    dispatch({type: ACTION_TYPES.SET_IS_EDIT, payload: true})
+    dispatch({type: ACTION_TYPES.SET_CURRENT_NOTE, payload: note });
+    dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: true})
   };
 
   // Save Note (Add or Update)
-  const handleSave = () => {
+  const handleSave = async () => {
   // Validate the note data and prevent empty notes
-  if (!currentNote.title.trim()) return;
+    if (!currentNote.title.trim() || !currentNote.description.trim()) {
+        alert("please add title and description")
+      return
+    }
 
-  if (isEdit) {
-    // Update an existing note
-    setNotes(prevNotes =>
-      prevNotes.map(note =>
-        note.id === currentNote.id ? currentNote : note
-      )
-    );
+  try {
+    if (isEdit) {
+    dispatch({ type: ACTION_TYPES.UPDATE_NOTE, data: currentNote })// Update an existing note
   } else {
-    // Add a new note
-    const newNote = {
-      ...currentNote,
-      id: Date.now(),
-    };
-    setNotes(prevNotes => [...prevNotes, newNote]);
+    await addNotesToDb({ ...currentNote})// Add a new note
   }
+    // dispatch({ type: ACTION_TYPES.SET_CURRENT_NOTE, payload: { id: null, title: "", description: "" } });   // Reset currentNote to empty so modal/input are cleared
 
-  setShowModal(false);
-};
+    dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: false})
+
+  } catch (error) {
+    console.error("failed to save a new note:", error)
+  }
+}
 
   return (
     <div
@@ -59,7 +63,7 @@ const NotesFeed = () => {
         <h2 className="text-2xl font-bold pr-170" style={{ color: "var(--primary)" }}>
           Shared Notes
         </h2>
-        <button onClick={handleAddClick}>+ Add</button>
+        <button onClick={handleAddClick}>+ Add</button> 
       </div>
 
       <div
@@ -74,7 +78,7 @@ const NotesFeed = () => {
         ) : (
           notes.map((note) => (
             <div
-              key={note.id}
+              key={note._id || `temp-${Date.now()}-${Math.random()}`}
               onClick={() => handleNoteClick(note)}
               className="rounded-md p-3 mb-2 cursor-pointer transition duration-200"
               style={{
@@ -100,9 +104,9 @@ const NotesFeed = () => {
         <NoteModal
           isEdit={isEdit}
           currentNote={currentNote}
-          setCurrentNote={setCurrentNote}
+          setCurrentNote={(note) => dispatch({ type: ACTION_TYPES.SET_CURRENT_NOTE, payload: note})}
           onSave={handleSave}
-          onClose={() => setShowModal(false)}
+          onClose={() => dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: false})}
         />
       )}
     </div>
