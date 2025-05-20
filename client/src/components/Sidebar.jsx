@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { AlignJustify, ChevronDown, ChevronRight } from "lucide-react"
 import { NavLink } from "react-router"
 
@@ -6,6 +6,32 @@ const SidebarContext = createContext()
 
 export default function Sidebar({children}){
     const [expanded, setExpanded] = useState(true) 
+    const userInfo = JSON.parse(localStorage.getItem('userInfo')); // stored info
+    const fullName = userInfo?.fullname
+    const role = userInfo?.role
+    const email = userInfo?.email
+
+    const getInitials = (name) => {
+        return name
+        .split(' ')
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join('')
+        .toUpperCase();
+
+    }
+
+
+
+    useEffect(() => {
+    console.log(userInfo?.fullname); // for checking if it fetches the users info 
+    // console.log(userInfo?.email); // for checking if it fetches the users info 
+    console.log(userInfo?.role); // for checking if it fetches the users info 
+    }, [])
+   
+    
+
+
     return(
         <>
         <aside className="h-screen">
@@ -15,12 +41,14 @@ export default function Sidebar({children}){
                     `}> 
                     <div className={`flex items-center gap-3 px-4 transition-all duration-300`}>
                                 <div className="w-10 h-10 rounded-full bg-blue-300 flex items-center justify-center text-white font-bold">
-                                    HR {/* insert image here */}
+                                    {/* HR insert image here */}
+                                    {getInitials(fullName) || 'U'}
                                     </div>
                                     {expanded && (
                                         <div className="flex flex-col transition-opacity duration-300">
-                                            <span className="font-semibold text-blue-900">Hanna Rizza</span>
-                                            <span className="text-sm text-blue-700">Caregiver</span>
+                                            <span className="font-semibold text-blue-900 capitalize">{fullName}</span>
+                                            <span className="text-sm text-blue-700">{email}</span>
+                                            {/* <span className="text-sm text-blue-700 capitalize">{role}</span> */}
                                         </div>
                                     )}
                                     </div>

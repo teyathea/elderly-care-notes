@@ -64,7 +64,7 @@ function App() {
           </div>
         </Sidebar>
 
-        <main className='flex-1 p-4'>
+        <main className='flex-1 p-4 overflow-y-auto h-screen'>  {/* make main screen scrollable */}
           <Routes>
             <Route path='/' element={<Home/>} />
             <Route path='/home' element={<Home/>} />

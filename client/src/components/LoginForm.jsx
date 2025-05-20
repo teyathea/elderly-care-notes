@@ -18,6 +18,7 @@ export default function LoginForm({onLogin, setIsLogin, navigate}) {
             const token = response.data.token || response.data.accessToken;
             if (token) { //keeps you logged in after refresh
               localStorage.setItem('userToken', token);
+              localStorage.setItem('userInfo', JSON.stringify(response.data.user)); // store user info too
               onLogin();
               navigate('/home');
             }

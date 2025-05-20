@@ -74,7 +74,7 @@ export default function SignUpForm({setIsLogin}) {
             <div className="mb-4 text-sm text-white text-center">
                 Already have an account?{' '}
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsLogin(true); }} className="text-blue-200 hover:underline cursor-pointer">
-                    Signup
+                    Login
                 </a>
             </div>
                 <button onClick={handleSignup} className="signupButton">

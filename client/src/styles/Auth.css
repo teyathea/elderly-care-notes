@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+/* @import 'tailwindcss';
+@plugin 'flowbite-react/plugin/tailwindcss';
+@source '../../.flowbite-react/class-list.json';
 
 .auth-container {
   @apply flex justify-center items-center h-screen w-screen bg-blue-200 font-sans;
@@ -53,4 +55,4 @@
 }
 .submit-btn-signup {
   @apply w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded cursor-pointer;
-}
+} */
