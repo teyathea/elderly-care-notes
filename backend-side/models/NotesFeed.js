@@ -13,11 +13,11 @@ const notesfeedSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    created_by: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'MainUser', 
-        required: true},
-
+    // created_by: { 
+    //     type: mongoose.Schema.Types.ObjectId, 
+    //     ref: 'ContactUser', 
+    //     required: true
+    // }
 })
 
 const NotesFeed = mongoose.model('NotesFeed', notesfeedSchema) // model name is NotesFeed
