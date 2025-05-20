@@ -16,9 +16,12 @@ export default function LoginForm({onLogin, setIsLogin, navigate}) {
             });
             console.log('Login successfully:', response.data)
             const token = response.data.token || response.data.accessToken;
-            if (token) { //keeps you logged in after refresh
+            const user = response.data.user;
+
+            if (token && user) { //keeps you logged in after refresh
               localStorage.setItem('userToken', token);
               localStorage.setItem('userInfo', JSON.stringify(response.data.user)); // store user info too
+              localStorage.setItem('user', JSON.stringify(user))
               onLogin();
               navigate('/home');
             }
