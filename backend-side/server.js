@@ -8,6 +8,7 @@ import contactUserRoutes from './routes/contactUserRoutes.js'
 import notesFeedRoutes from './routes/notesFeedRoutes.js'
 import medicationRoutes from './routes/medicationRoutes.js';
 import './jobs/autoDeleteMedications.js'
+import symptomsRoutes from './routes/symptomRoutes.js';
 const app = express();
 
 // connection to db
@@ -22,7 +23,7 @@ app.use('/api/mainusers', mainUserRoutes);
 app.use('/api/contactusers', contactUserRoutes)
 app.use('/api/notesfeed', notesFeedRoutes)
 app.use('/api', medicationRoutes);
-
+app.use('/api/symptoms', symptomsRoutes);
 
 const PORT = process.env.PORT || 8000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
