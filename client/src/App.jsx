@@ -10,7 +10,7 @@ import PatientsDetails from './components/PatientsDetails'
 import UserPage from './components/UsersPage.jsx'
 
 import { useState, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Sidebar, {SidebarItem} from './components/Sidebar'
 import {Library, SquareActivity, ClipboardPlus, LayoutDashboard, NotepadText, CalendarPlus, UserRoundPlus, UserRoundCog, ShieldUser, Settings } from "lucide-react"
 import Auth from './components/Auth'
@@ -20,12 +20,15 @@ import AcceptInvite from "./components/UserPageAcceptInvite.jsx";
 
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(null)
+  const navigate = useNavigate()
+
   useEffect(() => {
     const token = localStorage.getItem('userToken')
-    if (token) setIsLoggedIn(true)
+    setIsLoggedIn(!!token); // true if token exists, false otherwise
   }, []);
+
+
 
   return (
     <>
@@ -46,13 +49,13 @@ function App() {
               <SidebarItem to="/patients-Details" text="Patients Details" icon={<ShieldUser size={20}/>}/>
           </SidebarItem>
 
-          {/* <SidebarItem to="/home" text="Settings" />
-          <SidebarItem to="/home" text="Home" /> */}
           <div className="mt-auto px-4 pb-4">
             <button
               onClick={() => {
                 if (window.confirm("Are you sure you want to log out?")){
+                  localStorage.removeItem('userToken');  // <-- Remove the token
                   setIsLoggedIn(false)
+                  navigate('/') //redirects to login
                 }
               }}
               className="logout-btn">

@@ -7,6 +7,7 @@ export const NotesContext = createContext()
 
 export function NotesProvider({ children }) {
     const [state, dispatch] = useReducer(notesReducer, initialState) // galing notesReducer
+    
 
 
     useEffect(() => {
@@ -35,7 +36,7 @@ export function NotesProvider({ children }) {
             const response = await axios.post('http://localhost:8000/api/notesfeed/addnote', noteData)
             dispatch({
                 type: ACTION_TYPES.ADD_NOTE,
-                data: response.data
+                data: response.data.data
             })
             console.log("added new note")
 
@@ -44,13 +45,27 @@ export function NotesProvider({ children }) {
         }
     }
 
+    const deleteNotesToDb = async (noteId) => {
+        try {
+            await axios.delete(`http://localhost:8000/api/notesfeed/delete/${noteId}`)
+            dispatch({
+                type: ACTION_TYPES.DELETE_NOTE,
+                payload: noteId
+            })
+            
+        } catch (error) {
+            console.error("Error Deleting note from database")
+        }
+    }
+
+
     const updateNoteInDb = async (noteData) => {
         try {
-            const response = await axios.put(`http://localhost:8000/api/notesfeed/updatenote/${noteData._id}`, noteData);
+            const response = await axios.put(`http://localhost:8000/api/notesfeed/update/${noteData._id}`, noteData);
 
             dispatch({
                 type: ACTION_TYPES.UPDATE_NOTE,
-                data: response.data
+                data: response.data.data
             });
 
             console.log("Updated note:", response.data);
@@ -69,7 +84,9 @@ export function NotesProvider({ children }) {
             state,
             dispatch,
             addNotesToDb,
-            updateNoteInDb
+            updateNoteInDb,
+            deleteNotesToDb,
+            fetchNotes
 
         }}>
             {children}

@@ -1,20 +1,16 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import "../styles/Global.css";
 import NoteModal from "./modals/NoteModal"; 
 import { NotesContext } from "../context/NotesContext";
 import { ACTION_TYPES } from "../action-types/actionTypes";
 
-const NotesFeed = () => {
-  const {state, dispatch, addNotesToDb} = useContext(NotesContext)
-  const { isEdit, currentNote, showModal, notes} = state
-  // const [showModal, setShowModal] = useState(false);
-  // const [isEdit, setIsEdit] = useState(false);
+// useEffect(() => {
+//   console.log("Editing note, isEdit:", isEdit, "currentNote:", currentNote);
+// }, [isEdit, currentNote]);
 
-  // const [currentNote, setCurrentNote] = useState({
-  //   id: null,
-  //   title: "",
-  //   description: "",
-  // });
+const NotesFeed = () => {
+  const {state, dispatch, addNotesToDb, deleteNotesToDb, updateNoteInDb} = useContext(NotesContext)
+  const { isEdit, currentNote, showModal, notes} = state
 
   // Open Add Note Modal
   const handleAddClick = () => {
@@ -29,30 +25,40 @@ const NotesFeed = () => {
     dispatch({type: ACTION_TYPES.SET_IS_EDIT, payload: true})
     dispatch({type: ACTION_TYPES.SET_CURRENT_NOTE, payload: note });
     dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: true})
+      console.log("Clicked note to edit:", note);
+  console.log("Current isEdit (before update):", isEdit);
+  console.log("Current currentNote (before update):", currentNote);
   };
 
   // Save Note (Add or Update)
   const handleSave = async () => {
-  // Validate the note data and prevent empty notes
+    // Validate the note data and prevent empty notes
     if (!currentNote.title.trim() || !currentNote.description.trim()) {
-        alert("please add title and description")
+      alert("please add title and description")
       return
     }
 
-  try {
-    if (isEdit) {
-    dispatch({ type: ACTION_TYPES.UPDATE_NOTE, data: currentNote })// Update an existing note
-  } else {
-    await addNotesToDb({ ...currentNote})// Add a new note
+    try {
+      if (currentNote._id) {
+        await updateNoteInDb(currentNote)
+      } else {
+        await addNotesToDb({ ...currentNote })// Add a new note
+      }
+      dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: false })
+    } catch (error) {
+      console.error("failed to save a new note:", error)
+    }
   }
-    // dispatch({ type: ACTION_TYPES.SET_CURRENT_NOTE, payload: { id: null, title: "", description: "" } });   // Reset currentNote to empty so modal/input are cleared
 
-    dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: false})
+  const handleDelete = async (noteId) => {
+    try {
+      await deleteNotesToDb(noteId)
+      
+    } catch (error) {
+      console.error("Error deleting notes in NotesFeed", error)
+    }
 
-  } catch (error) {
-    console.error("failed to save a new note:", error)
   }
-}
 
   return (
     <div
@@ -79,22 +85,33 @@ const NotesFeed = () => {
           notes.map((note) => (
             <div
               key={note._id || `temp-${Date.now()}-${Math.random()}`}
-              onClick={() => handleNoteClick(note)}
-              className="rounded-md p-3 mb-2 cursor-pointer transition duration-200"
+              className="rounded-md p-3 mb-2 cursor-pointer transition duration-200 flex justify-between items-start"
               style={{
                 backgroundColor: "var(--medium)",
                 border: "1px solid var(--accent)",
                 color: "white",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--secondary)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--medium)")
-              }
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--secondary)")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--medium)")}
             >
-              <h4 className="text-lg font-semibold">{note.title}</h4>
-              <p className="text-sm mt-1">{note.description}</p>
+              <div className="flex-1" onClick={() => handleNoteClick(note)}>
+                <small>{new Date(note.date).toLocaleString()}</small>
+                {/* <small>{note.date}</small> */}
+
+                <h4 className="text-lg font-semibold">{note.title}</h4>
+                <p className="text-sm mt-1">{note.description}</p>
+              </div>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // prevents triggering the note click event
+                  // console.log("Deleting note with ID:", note._id);
+                  handleDelete(note._id);
+                }}
+                className="ml-4 bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded"
+              >
+                Delete
+              </button>
             </div>
           ))
         )}
