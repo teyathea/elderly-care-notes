@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+
+.page-wrapper {
+  @apply flex items-center justify-center min-h-screen bg-blue-50 px-4;
+}
+
+.container {
+  @apply relative px-6 py-4 max-w-2xl bg-blue-100 rounded shadow-md;
+}
+
+.heading {
+  @apply text-3xl font-extrabold mb-6 text-gray-800;
+}
+
+.add-button {
+  @apply fixed top-8 right-8 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition;
+}
+
+.loading-text,
+.empty-text {
+  @apply text-center mt-20;
+}
+
+.loading-text {
+  @apply text-gray-500;
+}
+
+.empty-text {
+  @apply italic text-gray-400;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #3b82f6;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #e5e7eb;
+}
+
+
+.day-heading {
+  @apply text-xl font-semibold mb-3 border-b border-gray-300 pb-1 text-gray-700;
+}
+
+.med-item {
+  @apply px-20 grid grid-cols-[1fr_auto_100px] gap-x-1 p-2 border border-gray-300 rounded-lg bg-white shadow-sm hover:shadow-md transition;
+}
+
+.med-name {
+  @apply text-gray-900;
+}
+
+.med-name-taken {
+  @apply line-through text-gray-400 font-medium;
+}
+
+.med-time {
+  @apply grid grid-cols-[1fr_auto_100px] text-sm text-gray-600 font-mono;
+}
+
+.checkbox {
+  @apply w-5 h-5 cursor-pointer accent-blue-600;
+}
+
+.no-med {
+  @apply px-60 p-2 border border-gray-300 rounded-lg bg-white italic text-gray-400 ml-2 shadow-sm;
+}

@@ -6,7 +6,8 @@ import connectDB from "./config/DatabaseConnection.js";
 import mainUserRoutes from './routes/mainUserRoutes.js'
 import contactUserRoutes from './routes/contactUserRoutes.js'
 import notesFeedRoutes from './routes/notesFeedRoutes.js'
-
+import medicationRoutes from './routes/medicationRoutes.js';
+import './jobs/autoDeleteMedications.js'
 const app = express();
 
 // connection to db
@@ -20,6 +21,7 @@ app.use(express.json())
 app.use('/api/mainusers', mainUserRoutes);
 app.use('/api/contactusers', contactUserRoutes)
 app.use('/api/notesfeed', notesFeedRoutes)
+app.use('/api', medicationRoutes);
 
 
 const PORT = process.env.PORT || 8000
