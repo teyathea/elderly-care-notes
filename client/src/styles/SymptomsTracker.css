@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+/* SymptomTrackerContainer.css */
+
+.symptom-input-container {
+  @apply p-6 max-w-5xl mt-15 mx-auto bg-white rounded-lg shadow-md;
+}
+
+
+.modal-overlay {
+  @apply fixed inset-0 bg-black flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg p-6 max-w-lg w-full shadow-lg relative;
+}
+
+.input-group {
+  @apply px-20 w-170 ;
+}
+.description-button-group {
+  @apply flex flex-col md:flex-row gap-4 w-150 mt-2;
+}
+
+.description-button-group input {
+  @apply text-lg w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400;
+}
+
+.description-button-group button {
+  @apply bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300;
+}
+
+.symptom-chart-container {
+  @apply mt-6;
+}
+
+.error-message {
+  @apply text-red-600 font-medium mt-2;
+}
+
+.symptom-item {
+  @apply mb-4 border-b border-gray-200 pb-4;
+}
+
+.delete-btn {
+  @apply mt-2 bg-red-500 text-white rounded px-3 py-1 hover:bg-red-600 transition;
+}
