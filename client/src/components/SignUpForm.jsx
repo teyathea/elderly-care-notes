@@ -42,8 +42,8 @@ export default function SignUpForm({setIsLogin}) {
     return(
         <>
         <div className="signupContainer">
-            <h2 className="signupPageText">Signup Page</h2>
-            <h3 className="elderlyCareText">Elderly Care ❤️</h3>
+            <h2 className="signupPageText">Signup</h2>
+            {/* <h3 className="elderlyCareText">Elderly Care ❤️</h3>  */}
             <div className="mb-4">
               <label htmlFor="fullName">Full Name</label>
               <input type="text" id="fullName" value={fullname} onChange={(e) => handleInputChange("fullname", e.target.value)} placeholder="Full Name" />
@@ -73,9 +73,9 @@ export default function SignUpForm({setIsLogin}) {
             </div>
             <div className="mb-4 text-sm text-white text-center">
                 Already have an account?{' '}
-                    <button className="loginLink" onClick={() => setIsLogin(true)}>
-                        login
-                    </button>
+                <a href="#" onClick={(e) => { e.preventDefault(); setIsLogin(true); }} className="text-blue-200 hover:underline cursor-pointer">
+                    Signup
+                </a>
             </div>
                 <button onClick={handleSignup} className="signupButton">
                     SIGNUP
