@@ -22,7 +22,7 @@ app.use('/api/mainusers', mainUserRoutes);
 app.use('/api/contactusers', contactUserRoutes)
 app.use('/api/notesfeed', notesFeedRoutes)
 app.use('/api', medicationRoutes);
-
+app.use('/api/medicalrecords', medicalRecordsRoutes)
 
 const PORT = process.env.PORT || 8000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

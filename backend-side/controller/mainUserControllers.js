@@ -42,9 +42,19 @@ export const loginUser = async (req, res) => {
 
     res.json({
       token,
-      user: { id: user._id, email: user.email, fullname: user.fullname },
+      user: { id: user._id, email: user.email, fullname: user.fullname, role: user.role  },
     });
+
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// export const userInfo = async (req, res) => {
+//   try {
+//     const user = await MainUser.findById(req.user.id).select
+    
+//   } catch (error) {
+    
+//   }
+// }
