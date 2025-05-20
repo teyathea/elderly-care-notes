@@ -15,12 +15,20 @@ export default function LoginForm({onLogin, setIsLogin, navigate}) {
                 password,
             });
             console.log('Login successfully:', response.data)
+<<<<<<< HEAD
             const token = response.data.token || response.data.accessToken;
             if (token) { //keeps you logged in after refresh
               localStorage.setItem('userToken', token);
               onLogin();
               navigate('/home');
             }
+=======
+            if (response.data.token) {
+              localStorage.setItem('userToken', response.data.token);
+            }
+            onLogin() // check if app was logged in.
+            // navigate('/home')
+>>>>>>> main
         } catch (error) {
             console.error('Login error', error.response?.data || error.message)
         }

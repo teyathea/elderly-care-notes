@@ -78,7 +78,7 @@ function App() {
             <Route path='/patients-details' element={<PatientsDetails/>} />
             <Route path="/accept-invite" element={<AcceptInvite onLogin={() => setIsLoggedIn(true)} />} />
             <Route path="/invite" element={<AcceptInvite />} />
-            <Route path='/users' element={<UserPage />} />
+            <Route path='/users-account' element={<UserPage />} />
           </Routes>
 
         </main>
