@@ -43,6 +43,10 @@ const addMedicalRecord = async (req, res) => {
 
 const uploadFile = async (req, res) => {
     try {
+
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded." });
+        }
         const { description, doctorName, category} = req.body
         const fileUrl = req.file.path // cloudinary url
 
@@ -52,13 +56,18 @@ const uploadFile = async (req, res) => {
             doctorName,
             category,
             fileUrl,
-            uploadAt: Date.now()
+            uploadAt: Date.now(),
+            // originalName: req.file.originalname, // original file name
+            originalName: req.originalFileName || req.file.originalname, // fallback
+            mimeType: req.file.mimetype
         })
 
         const savedRecord = await newRecord.save()
         
+        
         res.status(200).json({
             message: "File Uploaded Successfully",
+            url: req.file.path, // cloudinary secure url
             error: false,
             data: savedRecord // retruning the save Record
         })
@@ -70,4 +79,6 @@ const uploadFile = async (req, res) => {
         
     }
 }
+
+
 export {getAllMedicalRecords, addMedicalRecord, uploadFile}

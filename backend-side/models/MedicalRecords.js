@@ -11,7 +11,7 @@ const medicalrecordSchema = new Schema({
     },
     category: {
         type: String,
-        required: true,
+        // required: true,
         enum: [
             'Prescriptions',
             'Laboratory Results',
@@ -40,7 +40,14 @@ const medicalrecordSchema = new Schema({
     uploadAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    originalName: {
+        type: String,
+    }, 
+    mimeType: {
+        type: String,
+    } ,
+
 
 })
 
