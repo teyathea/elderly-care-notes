@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 
 #root {
   margin: 0px;
@@ -8,7 +10,7 @@
 body, html {
   margin: 0px;
   padding: 0px;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 /* :root {
@@ -72,26 +74,26 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
+  /* a:hover { */
     /* color: #0B192C; */
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  /* } */
+  /* button { */
+    /* background-color: #f9f9f9; */
+  /* } */
 }
 
 /* //dark mode */
 @media (prefers-color-scheme: dark) {
-  :root {
+  /* :root { */
     /* color: white; */
     /* background-color: #0B192C; */
-  }
-  a:hover {
-    color: #a3a8ff;
-  }
-  button {
+  /* } */
+  /* a:hover { */
+    /* color: #a3a8ff; */
+  /* } */
+  /* button { */
     /* background-color: ; */
-  }
+  /* } */
   .burger-icon svg {
     color: black;
   }

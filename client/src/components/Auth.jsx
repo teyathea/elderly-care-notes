@@ -10,7 +10,7 @@ const Auth = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true); 
   
   return (
-    <div className="flex justify-center items-center h-screen w-screen bg-blue-200 font-sans">
+    <div className="flex justify-center items-center h-screen w-screen font-sans">
       
       
       <div className="flex justify-center items-center max-w-2.5 w-full">

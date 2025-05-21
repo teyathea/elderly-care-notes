@@ -4,12 +4,8 @@ import NoteModal from "./modals/NoteModal";
 import { NotesContext } from "../context/NotesContext";
 import { ACTION_TYPES } from "../action-types/actionTypes";
 
-// useEffect(() => {
-//   console.log("Editing note, isEdit:", isEdit, "currentNote:", currentNote);
-// }, [isEdit, currentNote]);
-
 const NotesFeed = () => {
-  const {state, dispatch, addNotesToDb, deleteNotesToDb, updateNoteInDb} = useContext(NotesContext)
+  const {state, dispatch, addNotesToDb, deleteNotesToDb, updateNoteInDb, capitalizeSentence} = useContext(NotesContext)
   const { isEdit, currentNote, showModal, notes} = state
 
   // Open Add Note Modal
@@ -25,7 +21,7 @@ const NotesFeed = () => {
     dispatch({type: ACTION_TYPES.SET_IS_EDIT, payload: true})
     dispatch({type: ACTION_TYPES.SET_CURRENT_NOTE, payload: note });
     dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: true})
-      console.log("Clicked note to edit:", note);
+  console.log("Clicked note to edit:", note);
   console.log("Current isEdit (before update):", isEdit);
   console.log("Current currentNote (before update):", currentNote);
   };
@@ -57,13 +53,12 @@ const NotesFeed = () => {
     } catch (error) {
       console.error("Error deleting notes in NotesFeed", error)
     }
-
   }
 
   return (
     <div
       className="p-4 min-h-screen flex flex-col items-center"
-      style={{ backgroundColor: "var(--light)" }}
+      // style={{ backgroundColor: "var(--secondary)" }}
     >
       <div className="w-full max-w-[1000px] flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold pr-170" style={{ color: "var(--primary)" }}>
@@ -84,7 +79,7 @@ const NotesFeed = () => {
         ) : (
           notes.map((note) => (
             <div
-              key={note._id || `temp-${Date.now()}-${Math.random()}`}
+              key={note._id || `temp-${Date.now()}-${Math.random()}`} // unique key
               className="rounded-md p-3 mb-2 cursor-pointer transition duration-200 flex justify-between items-start"
               style={{
                 backgroundColor: "var(--medium)",
@@ -94,19 +89,20 @@ const NotesFeed = () => {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--secondary)")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--medium)")}
             >
+
               <div className="flex-1" onClick={() => handleNoteClick(note)}>
                 <small>{new Date(note.date).toLocaleString()}</small>
-                {/* <small>{note.date}</small> */}
 
-                <h4 className="text-lg font-semibold">{note.title}</h4>
-                <p className="text-sm mt-1">{note.description}</p>
+                <h4 className="text-lg font-semibold capitalize">{note.title}</h4>
+                <p className="text-sm mt-1">{capitalizeSentence(note.description)}</p>
               </div>
 
               <button
                 onClick={(e) => {
                   e.stopPropagation(); // prevents triggering the note click event
-                  // console.log("Deleting note with ID:", note._id);
-                  handleDelete(note._id);
+                  if(window.confirm("Are you sure you want to delete?")){
+                    handleDelete(note._id);
+                  }
                 }}
                 className="ml-4 bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded"
               >

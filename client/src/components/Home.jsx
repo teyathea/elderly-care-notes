@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { NotesContext } from "../context/NotesContext";
 
 export default function Home() {
-    const {state, dispatch, fetchNotes} = useContext(NotesContext)
+    const {state, dispatch, fetchNotes, capitalizeSentence} = useContext(NotesContext)
     const {notes} = state
 
     useEffect(() => {
@@ -48,19 +48,21 @@ export default function Home() {
                     </ul>
                 </div>
             </div>
+{/* NOTES */}
+            <div className="border-2 flex flex-col border-black  text-black rounded-xl p-4 mt-4">
+                <h2 className="flex justify-center font-semibold mb-2">Notes</h2>
 
-            <div className="border-2 border-black rounded-xl p-4 mt-4">
-                <h2 className="text-black font-semibold mb-2">Notes:</h2>
-                <div className="w-full bg-transparent text-black border-none outline-none resize-none h-24">
-                    {notes.map((note) => {
-                        return (
-                        <div key={note._id} >
-                            <h3>{note.title}</h3>
-                            <p>{note.description}</p>
-                            <small>{new Date(note.date).toLocaleString()}</small>
-                        </div>
-                        )
-                    })}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-none outline-none resize-none h-40 overflow-y-auto space-y-2">
+                    {[...notes]
+                        .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by newest
+                        .slice(0, 7) // Show only the latest 5 notes
+                        .map((note) => (
+                            <div key={note._id} className="bg-green-200 p-2">
+                                <h3 className="capitalize font-semibold">Title: {note.title}</h3>
+                                <p>{capitalizeSentence(note.description)}</p>
+                                <small>{new Date(note.date).toLocaleString()}</small>
+                            </div>
+                        ))}
                 </div>
             </div>
 

@@ -9,11 +9,17 @@ export function NotesProvider({ children }) {
     const [state, dispatch] = useReducer(notesReducer, initialState) // galing notesReducer
     
 
+    const capitalizeSentence = (text) => {
+        return text
+        .split('. ')
+        .map(sentence => sentence.charAt(0).toUpperCase() + sentence.slice(1))
+        .join('. ')
+    }
 
-    useEffect(() => {
-        // Fetch notes when component mounts
+    useEffect(() => { // Fetch notes when component mounts
         fetchNotes();
     }, []);
+
 
 
     const fetchNotes = async () => {
@@ -86,7 +92,8 @@ export function NotesProvider({ children }) {
             addNotesToDb,
             updateNoteInDb,
             deleteNotesToDb,
-            fetchNotes
+            fetchNotes,
+            capitalizeSentence
 
         }}>
             {children}
