@@ -31,7 +31,6 @@ export const getSymptoms = async (req, res) => {
   }
 };
 
-
 export const deleteSymptom = async (req, res) => {
   try {
     const { id } = req.params;
@@ -57,8 +56,6 @@ export const deleteSymptom = async (req, res) => {
     if (symptom.loggedBy.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ message: "Not authorized to delete this symptom" });
     }
-
-
 
     await Symptom.findByIdAndDelete(id);
 

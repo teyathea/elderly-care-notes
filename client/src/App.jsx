@@ -8,6 +8,7 @@ import UserInvite from './components/UserInvite'
 import ProfileSettings from './components/ProfileSettings'
 import PatientsDetails from './components/PatientsDetails'
 import UserPage from './components/UsersPage.jsx'
+import ChatPopup from './components/Chat.jsx';
 
 import { useState, useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
@@ -80,6 +81,7 @@ function App() {
             <Route path="/invite" element={<AcceptInvite />} />
             <Route path='/users-account' element={<UserPage />} />
           </Routes>
+          <ChatPopup />
 
         </main>
       </div>
