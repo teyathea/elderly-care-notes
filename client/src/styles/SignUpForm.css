@@ -1,10 +1,4 @@
 @import "tailwindcss";
-<<<<<<< HEAD
-
-=======
-/* @plugin "flowbite-react/plugin/tailwindcss";
-@source "../../.flowbite-react/class-list.json"; */
->>>>>>> main
 
 .signupContainer {
     @apply border-2 border-white rounded-xl p-5 w-150 bg-blue-800/80 backdrop-blur-md shadow-lg 
