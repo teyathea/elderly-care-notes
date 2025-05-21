@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FileUploadForm from "./FileUploadForm.jsx"; // adjust path if needed
+import MedicalRecordsList from "./MedicalRecordsList.jsx";
 // import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 // import { storage } from "../firebase";
 
@@ -32,7 +33,10 @@ export default function MedicalRecords() {
           {showForm ? (
             <FileUploadForm />
           ) : (
+            <>
             <p>Click the "Add" button to upload medical records.</p>
+            <MedicalRecordsList />
+            </>
           )}
         </div>
       </div>
