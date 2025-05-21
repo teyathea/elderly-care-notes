@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 
-
 .userPage-container {
   @apply relative p-6 bg-gray-50 min-h-screen;
 }

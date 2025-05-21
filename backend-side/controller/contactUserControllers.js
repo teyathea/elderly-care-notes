@@ -19,7 +19,7 @@ export const inviteUser = async (req, res) => {
       return res.status(400).json({ message: 'Contact already invited' });
     }
 
-    const invitationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '3d' });
+    const invitationToken = jwt.sign({ email }, process.env.JWT_SECRET);
 
     const newContact = new ContactUser({
       fullname,
@@ -57,10 +57,10 @@ export const acceptInvite = async (req, res) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const contact = await ContactUser.findOne({ email: payload.email, invitationToken: token });
+    const contact = await ContactUser.findOne({ email: payload.email });
 
     if (!contact) {
-      return res.status(400).json({ message: 'Invalid or expired token' });
+      return res.status(400).json({ message: 'User not found' });
     }
 
     if (!contact.isActive) {
@@ -75,14 +75,14 @@ export const acceptInvite = async (req, res) => {
       { expiresIn: '1d' }
     );
 
-    res.json({
+    res.status(200).json({
       token: loginToken,
       fullname: contact.fullname,
       email: contact.email,
       role: contact.role,
     });
   } catch (error) {
-    res.status(400).json({ message: 'Invalid or expired token' });
+    return res.status(400).json({ message: 'Invalid or expired token' });
   }
 };
 

@@ -39,8 +39,14 @@ export const addMedication = async (req, res) => {
 
 export const getMedications = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const medications = await Medication.find({ user_id: userId });
+    const userRole = req.user.role;
+    let medications;
+    if (userRole === 'admin' || userRole === 'family' || userRole === 'caregiver') {
+      medications = await Medication.find({});
+    } else {
+      medications = await Medication.find({ user_id: req.user.id });
+    }
+
     res.json(medications);
   } catch (error) {
     console.error('Error fetching medications:', error);
@@ -96,7 +102,6 @@ export const updateMedication = async (req, res) => {
     res.status(500).json({ error: 'Server error while updating medication' });
   }
 };
-
 
 export const deleteMedication = async (req, res) => {
   const { id } = req.params;
