@@ -12,6 +12,12 @@ const UserPage = () => {
   const [editedEmail, setEditedEmail] = useState('');
   const [editedRole, setEditedRole] = useState('');
 
+  // Get current user role from localStorage (adjust if your app uses a different method)
+  const currentUserRole = localStorage.getItem('userRole');
+
+  // Determine if current user can edit/add/delete users
+  const canEditUsers = currentUserRole !== 'caregiver' && currentUserRole !== 'family';
+
   const fetchUsers = async () => {
     try {
       const res = await axios.get('http://localhost:8000/api/contactusers', {
@@ -140,9 +146,11 @@ const UserPage = () => {
 
   return (
     <div className="userPage-container">
-      <button onClick={() => setInviteOpen(true)} className="add-user-button">
-        Add User
-      </button>
+      {canEditUsers && (
+        <button onClick={() => setInviteOpen(true)} className="add-user-button">
+          Add User
+        </button>
+      )}
 
       <table className="table">
         <thead>
@@ -158,7 +166,7 @@ const UserPage = () => {
           {users.map(user => (
             <tr key={user._id} className="table-row">
               <td className="table-cell">
-                {editingUserId === user._id ? (
+                {editingUserId === user._id && canEditUsers ? (
                   <input
                     type="text"
                     value={editedName}
@@ -170,7 +178,7 @@ const UserPage = () => {
                 )}
               </td>
               <td className="table-cell">
-                {editingUserId === user._id ? (
+                {editingUserId === user._id && canEditUsers ? (
                   <input
                     type="email"
                     value={editedEmail}
@@ -182,7 +190,7 @@ const UserPage = () => {
                 )}
               </td>
               <td className="table-cell">
-                {editingUserId === user._id ? (
+                {editingUserId === user._id && canEditUsers ? (
                   <input
                     type="text"
                     value={editedRole}
@@ -201,6 +209,7 @@ const UserPage = () => {
                     checked={!!user.isContributor}
                     onChange={e => toggleContributor(user._id, e.target.checked)}
                     className="checkbox-input"
+                    disabled={!canEditUsers}
                   />
                   Contributor
                 </label>
@@ -212,12 +221,13 @@ const UserPage = () => {
                     checked={!!user.isViewOnly}
                     onChange={e => toggleViewOnly(user._id, e.target.checked)}
                     className="checkbox-input"
+                    disabled={!canEditUsers}
                   />
                   View Only
                 </label>
               </td>
               <td className="table-cell">
-                {editingUserId === user._id ? (
+                {editingUserId === user._id && canEditUsers ? (
                   <>
                     <button
                       className="action-button-save"
@@ -233,25 +243,27 @@ const UserPage = () => {
                     </button>
                   </>
                 ) : (
-                  <>
-                    <button
-                      className="action-button-edit"
-                      onClick={() => {
-                        setEditingUserId(user._id);
-                        setEditedName(user.fullname);
-                        setEditedEmail(user.email);
-                        setEditedRole(user.role);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(user._id)}
-                      className="action-button-delete"
-                    >
-                      Delete
-                    </button>
-                  </>
+                  canEditUsers && (
+                    <>
+                      <button
+                        className="action-button-edit"
+                        onClick={() => {
+                          setEditingUserId(user._id);
+                          setEditedName(user.fullname);
+                          setEditedEmail(user.email);
+                          setEditedRole(user.role);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user._id)}
+                        className="action-button-delete"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )
                 )}
               </td>
             </tr>

@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@plugin "flowbite-react/plugin/tailwindcss";
-@source "../../.flowbite-react/class-list.json";
+/* @plugin "flowbite-react/plugin/tailwindcss";
+@source "../../.flowbite-react/class-list.json"; */
 
 .logout-btn{
     @apply bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-full

@@ -7,7 +7,7 @@ import '../styles/SignUpForm.css'
 
 export default function SignUpForm({setIsLogin}) {
     const [state, dispatch] = useReducer(authReducer, initialState)
-    const {fullname, signupEmail, signupPassword, confirmPassword, role} = state.signUpData;
+    const {fullname, signupEmail, signupPassword, confirmPassword} = state.signUpData;
 
         const API_REGISTER_URL = import.meta.env.VITE_REGISTER_URL; 
         // http://localhost:8000/api/mainusers/register
@@ -26,7 +26,6 @@ export default function SignUpForm({setIsLogin}) {
                         fullname,
                         email: signupEmail,
                         password: signupPassword,
-                        role,
                     });
                     console.log('Signup successful:', response.data);
                     setIsLogin(true);
@@ -35,10 +34,6 @@ export default function SignUpForm({setIsLogin}) {
                 }
             }
 
-    const statusOptions = [
-        "Family",
-        "Caregiver"
-    ]
     return(
         <>
         <div className="signupContainer">
@@ -59,17 +54,6 @@ export default function SignUpForm({setIsLogin}) {
             <div className="mb-4">
               <label htmlFor="confirmPassword">Confirm Password</label>
               <input type="password" id="confirmPassword" value={confirmPassword} onChange={(e) => handleInputChange("confirmPassword",e.target.value)} placeholder="Confirm Password" />
-            </div>
-            <div className='mb-4'>
-                <label htmlFor="role">Role</label>
-                <select id="role" value={role} onChange={(e) => handleInputChange("role",e.target.value)} >
-
-                    <option hidden>Select Role</option>
-                        {statusOptions.map((status) => (
-                            <option key={status} value={status}> {status} </option>
-                        ))}
-
-                </select>
             </div>
             <div className="mb-4 text-sm text-white text-center">
                 Already have an account?{' '}

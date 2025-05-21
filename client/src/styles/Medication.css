@@ -1,6 +1,6 @@
 @import 'tailwindcss';
-@plugin 'flowbite-react/plugin/tailwindcss';
-@source '../../.flowbite-react/class-list.json';
+/* @plugin 'flowbite-react/plugin/tailwindcss'; */
+/* @source '../../.flowbite-react/class-list.json'; */
 
 .page-wrapper {
   @apply flex items-center justify-center min-h-screen bg-blue-50 px-4;
