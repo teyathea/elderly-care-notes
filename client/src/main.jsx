@@ -4,13 +4,15 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { NotesProvider } from './context/NotesContext.jsx'
-
+import { SidebarProvider } from './components/Sidebar.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <NotesProvider>
-        <App />
-      </NotesProvider>
+      <SidebarProvider>
+        <NotesProvider>
+          <App />
+        </NotesProvider>
+      </SidebarProvider>
     </BrowserRouter>
   </StrictMode>,
 )

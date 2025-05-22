@@ -8,6 +8,9 @@ const contactSchema = new mongoose.Schema({
         type: String, 
         unique: true
     },
+    password: {
+        type: String
+    },
     role: { 
         type: String, 
         enum: ['family', 'caregiver'], 
