@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { Download, Edit, Trash2, Save, X } from "lucide-react";
+import "../../styles/Global.css";
 
 const categories = [
   "Prescriptions",
@@ -48,6 +49,8 @@ export default function MedicalRecordsModal({
 
   const handleSave = async () => {
     try {
+      console.log("Updating record with ID:", record._id);
+
       const response = await fetch(
         `http://localhost:8000/api/medicalrecords/update/${record._id}`,
         {
@@ -79,6 +82,8 @@ export default function MedicalRecordsModal({
 
   const handleDelete = async () => {
     try {
+      console.log("Updating record with ID:", record._id);
+
       const response = await fetch(
         `http://localhost:8000/api/medicalrecords/delete/${record._id}`,
         {
@@ -100,8 +105,8 @@ export default function MedicalRecordsModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-      <div className="bg-white rounded-xl shadow-lg w-[60%] md:w-[60%] max-h-[90vh] overflow-y-auto p-6 relative">
+    <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
+      <div className="bg-[var(--light)] rounded-xl shadow-lg w-[60%] md:w-[60%] max-h-[90vh] overflow-y-auto p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-black"
@@ -112,13 +117,13 @@ export default function MedicalRecordsModal({
 
         <div className="space-y-3">
           <div>
-            <label className="font-medium">Description:</label>
+            <label className="font-medium font-semibold text-[var(--light)]">Description:</label>
             {isEditing ? (
               <input
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                className="w-full border rounded px-2 py-1 mt-1"
+                className="w-full border rounded px-2 py-1 mt-1 text-[var(--light)]"
               />
             ) : (
               <p className="text-gray-700">{record.description}</p>
@@ -126,7 +131,7 @@ export default function MedicalRecordsModal({
           </div>
 
           <div>
-            <label className="font-medium">Doctor Name:</label>
+            <label className="font-medium ">Doctor Name:</label>
             {isEditing ? (
               <input
                 name="doctorName"
