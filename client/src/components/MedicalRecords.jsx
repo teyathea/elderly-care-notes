@@ -47,8 +47,7 @@
 import React, { useState, useEffect } from "react";
 import UploadMedicalRecordsModal from "../components/modals/UploadMedicalRecordsModal";
 import MedicalRecordsModal from "../components/modals/MedicalRecordsModal";
-import { Download, Edit, Trash2, Save, X } from "lucide-react";
-
+import "../styles/Global.css";
 
 export default function MedicalRecords() {
   const [records, setRecords] = useState([]);
@@ -59,8 +58,6 @@ export default function MedicalRecords() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  
 
   useEffect(() => {
     fetch("http://localhost:8000/api/medicalrecords/getAllRecords")
@@ -89,7 +86,6 @@ export default function MedicalRecords() {
   }, [categoryFilter, monthFilter, yearFilter, records]);
 
   const handleRecordClick = (record) => {
-    // console.log(record.uploadAt)
     setSelectedRecord(record);
     setShowDetailsModal(true);
   };
@@ -115,20 +111,22 @@ export default function MedicalRecords() {
   ];
 
   return (
-    <div className="p-4">
+    <div className="p-4" style={{ backgroundColor: 'var(--light)' }}>
       {/* Title */}
-      <h1 className="text-2xl font-semibold text-center mb-4">Medical Records</h1>
+      <h1 className="text-3xl font-bold mb-6 mr-70 ml-70" style={{ color: 'var(--primary)' }}>Medical Records</h1>
 
       {/* Filter and Upload */}
-      <div className="border rounded-lg p-4 mb-6 bg-white shadow-md flex flex-wrap gap-4 items-center">
+      <div 
+        className="border rounded-lg p-4 mb-6 bg-white shadow-md flex flex-wrap gap-4 items-center" 
+        style={{ borderColor: 'var(--light)' }}>
         <select
           className="border rounded p-2"
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
           <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>{category}</option>
           ))}
         </select>
 
@@ -157,50 +155,42 @@ export default function MedicalRecords() {
         </select>
       </div>
 
-{/* ////////////////////////////
-// UPLOAD BUTTON AND RECORD LIST 
-///////////////////////////////*/}
+      
 
-        <div className="text-black">
-          <div className="flex justify-end mb-2">
-            <button
-              onClick={() => setShowUploadModal(true)}
-              className="ml-auto bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
-              Upload
-            </button>
-          </div>
-
-        {/* Records List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredRecords.length === 0 ? (
-            <p className="text-gray-500">No medical records found.</p>
-          ) : (
-            filteredRecords.map((record) => (
-              <div
-                key={record._id}
-                onClick={() => handleRecordClick(record)}
-                className="cursor-pointer border p-4 rounded-lg shadow hover:bg-blue-50 transition bg-white"
-              >
-                {/* <button>DELETE</button> */}
-                <div className="flex justify-end">
-                  <button onClick={() => setShowDeleteConfirm(true)} className=" bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center" >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-                <p className="font-medium text-lg capitalize">{record.description}</p>
-                <p className="text-sm text-gray-600 capitalize">Doctor: {record.doctorName}</p>
-                <p className="text-sm text-gray-600">Category: {record.category}</p>
-                <p className="text-sm text-gray-600">{new Date(record.uploadAt).toLocaleString()}</p>
-              </div>
-            ))
-          )}
-        </div>
+    <div>
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={() => setShowUploadModal(true)}
+          className="ml-auto bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
+          Upload
+        </button>
       </div>
        
-
-{/* /////////////////////////////
-// MODALS - FOR UPLOAD AND VIEW
-//////////////////////////////// */}
+      {/* Records List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredRecords.length === 0 ? (
+          <p className="text-gray-500">No medical records found.</p>
+        ) : (
+          filteredRecords.map((record) => (
+            <div
+              key={record._id || `temp-${Date.now()}-${Math.random()}`}
+              onClick={() => handleRecordClick(record)}
+              className="cursor-pointer border p-4 rounded-lg shadow hover:bg-blue-50 transition bg-white"
+              style={{
+                backgroundColor: "var(--medium)",
+                border: "1px solid var(--light)",
+                color: "white",
+              }}
+            >
+              <p className="font-medium text-lg">{record.description}</p>
+              <p className="text-sm text-gray-600">Doctor: {record.doctorName}</p>
+              <p className="text-sm text-gray-600">Category: {record.category}</p>
+              <p className="text-sm text-gray-600">Uploaded: {new Date(record.uploadAt).toLocaleString()}</p>
+            </div>
+          ))
+        )}
+      </div>
+</div>
 
       {/* Upload Modal */}
       {showUploadModal && (
@@ -209,7 +199,6 @@ export default function MedicalRecords() {
           onUpload={(newRecord) => setRecords((prev) => [...prev, newRecord])}
         />
       )}
-
 
       {/* View/Edit Modal */}
       {showDetailsModal && selectedRecord && (
@@ -220,31 +209,6 @@ export default function MedicalRecords() {
           onDelete={handleRecordDelete}
         />
       )}
-
-      {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-              <p className="mb-4">
-                Are you sure you want to delete this record?
-              </p>
-              <div className="flex justify-center space-x-4">
-                <button
-                  onClick={handleDelete}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Yes, Delete
-                </button>
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
     </div>
   );
 }
