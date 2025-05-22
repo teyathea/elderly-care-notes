@@ -47,8 +47,8 @@
 import React, { useState, useEffect } from "react";
 import UploadMedicalRecordsModal from "../components/modals/UploadMedicalRecordsModal";
 import MedicalRecordsModal from "../components/modals/MedicalRecordsModal";
+import { Download, Edit, Trash2, Save, X } from "lucide-react";
 
-import "../styles/Global.css";
 
 export default function MedicalRecords() {
   const [records, setRecords] = useState([]);
@@ -115,14 +115,12 @@ export default function MedicalRecords() {
   ];
 
   return (
-    <div className="p-4" style={{ backgroundColor: 'var(--light)' }}>
+    <div className="p-4">
       {/* Title */}
-      <h1 className="text-3xl font-bold mb-6 mr-70 ml-70" style={{ color: 'var(--primary)' }}>Medical Records</h1>
+      <h1 className="text-2xl font-semibold text-center mb-4">Medical Records</h1>
 
       {/* Filter and Upload */}
-      <div 
-        className="border rounded-lg p-4 mb-6 bg-white shadow-md flex flex-wrap gap-4 items-center" 
-        style={{ borderColor: 'var(--light)' }}>
+      <div className="border rounded-lg p-4 mb-6 bg-white shadow-md flex flex-wrap gap-4 items-center">
         <select
           className="border rounded p-2"
           value={categoryFilter}
@@ -159,29 +157,44 @@ export default function MedicalRecords() {
         </select>
       </div>
 
-      {/* Records List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredRecords.length === 0 ? (
-          <p className="text-gray-500">No medical records found.</p>
-        ) : (
-          filteredRecords.map((record) => (
-            <div
-              key={record._id || `temp-${Date.now()}-${Math.random()}`}
-              onClick={() => handleRecordClick(record)}
-              className="cursor-pointer border p-4 rounded-lg shadow hover:bg-blue-50 transition bg-white"
-              style={{
-                backgroundColor: "var(--medium)",
-                border: "1px solid var(--light)",
-                color: "white",
-              }}
-            >
-              <p className="font-medium text-lg">{record.description}</p>
-              <p className="text-sm text-gray-600">Doctor: {record.doctorName}</p>
-              <p className="text-sm text-gray-600">Category: {record.category}</p>
-              <p className="text-sm text-gray-600">Uploaded: {new Date(record.date).toLocaleString()}</p>
-            </div>
-          ))
-        )}
+{/* ////////////////////////////
+// UPLOAD BUTTON AND RECORD LIST 
+///////////////////////////////*/}
+
+        <div className="text-black">
+          <div className="flex justify-end mb-2">
+            <button
+              onClick={() => setShowUploadModal(true)}
+              className="ml-auto bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
+              Upload
+            </button>
+          </div>
+
+        {/* Records List */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredRecords.length === 0 ? (
+            <p className="text-gray-500">No medical records found.</p>
+          ) : (
+            filteredRecords.map((record) => (
+              <div
+                key={record._id}
+                onClick={() => handleRecordClick(record)}
+                className="cursor-pointer border p-4 rounded-lg shadow hover:bg-blue-50 transition bg-white"
+              >
+                {/* <button>DELETE</button> */}
+                <div className="flex justify-end">
+                  <button onClick={() => setShowDeleteConfirm(true)} className=" bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center" >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="font-medium text-lg capitalize">{record.description}</p>
+                <p className="text-sm text-gray-600 capitalize">Doctor: {record.doctorName}</p>
+                <p className="text-sm text-gray-600">Category: {record.category}</p>
+                <p className="text-sm text-gray-600">{new Date(record.uploadAt).toLocaleString()}</p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
        
 
