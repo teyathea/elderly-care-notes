@@ -1,4 +1,5 @@
 import MedicalRecord from "../models/MedicalRecords.js"; // models schema
+import axios from "axios"; // for making api calls
 
 const getAllMedicalRecords = async (req, res) => {
     try {
@@ -43,6 +44,10 @@ const addMedicalRecord = async (req, res) => {
 
 const uploadFile = async (req, res) => {
     try {
+
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded." });
+        }
         const { description, doctorName, category} = req.body
         const fileUrl = req.file.path // cloudinary url
 
@@ -52,13 +57,18 @@ const uploadFile = async (req, res) => {
             doctorName,
             category,
             fileUrl,
-            uploadAt: Date.now()
+            uploadAt: Date.now(),
+            // originalName: req.file.originalname, // original file name
+            originalName: req.originalFileName || req.file.originalname, // fallback
+            mimeType: req.file.mimetype
         })
 
         const savedRecord = await newRecord.save()
         
+        
         res.status(200).json({
             message: "File Uploaded Successfully",
+            url: req.file.path, // cloudinary secure url
             error: false,
             data: savedRecord // retruning the save Record
         })
@@ -70,4 +80,37 @@ const uploadFile = async (req, res) => {
         
     }
 }
-export {getAllMedicalRecords, addMedicalRecord, uploadFile}
+
+/////////////////////////////////
+//DOWNLOAD FILE WITH CORRECT NAME
+////////////////////////////////
+const downloadFile = async (req, res) => {
+    try {
+        const record = await MedicalRecord.findById(req.params.recordId)
+
+        if(!record || !record.fileUrl){
+            return res.status(404).json({ message: "Record or File not founnd"})
+        }
+
+        const response = await axios.get(record.fileUrl, {responseType:'stream'})
+
+        //set headers para yung file name pag dinownload is correct filename
+        res.setHeader(
+            'Content-Disposition', `attachment; filename="${encodeURIComponent(record.originalName)}"`
+        );
+        res.setHeader("Content-Type", response.headers["content-type"])
+
+        //Pipe the cloudinary response to client response
+        response.data.pipe(res)
+        
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            error: "Error downloadin file"
+        })
+        
+    }
+}
+
+
+export {getAllMedicalRecords, addMedicalRecord, uploadFile, downloadFile}
