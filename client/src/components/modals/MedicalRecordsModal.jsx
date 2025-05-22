@@ -32,6 +32,7 @@ export default function MedicalRecordsModal({
   onDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [form, setForm] = useState({
     description: record.description,
@@ -48,6 +49,7 @@ export default function MedicalRecordsModal({
   };
 
   const handleSave = async () => {
+    setIsSaving(true); // Show loading state and disable button
     try {
       console.log("Updating record with ID:", record._id);
 
@@ -67,6 +69,7 @@ export default function MedicalRecordsModal({
       );
 
       if (!response.ok) {
+        const errResponse = await response.json();
         throw new Error("Failed to update record");
       }
 
@@ -82,7 +85,7 @@ export default function MedicalRecordsModal({
 
   const handleDelete = async () => {
     try {
-      console.log("Updating record with ID:", record._id);
+      console.log("Deleting record with ID:", record._id);
 
       const response = await fetch(
         `http://localhost:8000/api/medicalrecords/delete/${record._id}`,
@@ -106,7 +109,7 @@ export default function MedicalRecordsModal({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
-      <div className="bg-[var(--light)] rounded-xl shadow-lg w-[60%] md:w-[60%] max-h-[90vh] overflow-y-auto p-6 relative">
+      <div className="bg-[var(--light)] rounded-xl shadow-lg w-[90%] md:w-[60%] max-h-[90vh] overflow-y-auto p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-black"
@@ -117,7 +120,7 @@ export default function MedicalRecordsModal({
 
         <div className="space-y-3">
           <div>
-            <label className="font-medium font-semibold text-[var(--light)]">Description:</label>
+            <label className="font-medium font-semibold text-[var(--primary)]">Description:</label>
             {isEditing ? (
               <input
                 name="description"
@@ -161,7 +164,7 @@ export default function MedicalRecordsModal({
           <div>
             <label className="font-medium">Uploaded:</label>
             <p className="text-gray-700">
-              {new Date(record.createdAt).toLocaleString()}
+              {new Date(record.uploadAt).toLocaleString()}
             </p>
           </div>
 
@@ -216,6 +219,7 @@ export default function MedicalRecordsModal({
 
                 >
                   <Download className="w-4 h-4 mr-2" />
+                  <span className="sr-only">Download</span>
                 </a>
               )}
             </>
