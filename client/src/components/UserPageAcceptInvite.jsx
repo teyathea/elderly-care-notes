@@ -1,54 +1,123 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { SidebarContext } from "./Sidebar";
 
 const AcceptInvite = ({ onLogin }) => {
+  const { updateUserInfo } = useContext(SidebarContext);
   const [message, setMessage] = useState("Verifying invite...");
+  const [tokenValid, setTokenValid] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordSetMessage, setPasswordSetMessage] = useState("");
+  const [settingPassword, setSettingPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    let isMounted = true;
-    const verify = async () => {
-      const token = new URLSearchParams(window.location.search).get("token");
-      if (!token) {
-        setMessage("Missing token.");
-        return;
-      }
+    const token = new URLSearchParams(window.location.search).get("token");
+    if (!token) {
+      setMessage("Missing token.");
+      return;
+    }
 
-      try {
-        const res = await axios.get(
-          `http://localhost:8000/api/contactusers/accept-invite?token=${token}`
-        );
+    axios
+      .get(`http://localhost:8000/api/contactusers/accept-invite?token=${token}`)
+      .then((res) => {
+        const { token, fullname, email, role, id } = res.data;
 
-        if (!isMounted) return;
+        localStorage.setItem("userToken", token);
 
-        // Save user data & token to localStorage
-        localStorage.setItem("userToken", res.data.token);
-        localStorage.setItem("userFullname", res.data.fullname);
-        localStorage.setItem("userEmail", res.data.email);
-        localStorage.setItem("userRole", res.data.role);
+        const userInfo = { fullname, email, role, id: id || null };
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        updateUserInfo(userInfo);
 
-        // Notify parent app user is logged in
-        onLogin();
-
-        setMessage("Redirecting...");
-        setTimeout(() => {
-          navigate("/home");
-        }, 1000);
-      } catch (error) {
-        if (!isMounted) return;
+        setMessage("Invite accepted! Please set your password.");
+        setTokenValid(true);
+      })
+      .catch((error) => {
         setMessage(error.response?.data?.message || "Invalid or expired token.");
-      }
-    };
+      });
+  }, [updateUserInfo]);
 
-    verify();
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
 
-    return () => {
-      isMounted = false;
-    };
-  }, [navigate, onLogin]);
+    if (password.trim().length < 6) {
+      setPasswordSetMessage("Password must be at least 6 characters.");
+      return;
+    }
 
-  return <p>{message}</p>;
+    setSettingPassword(true);
+    setPasswordSetMessage("");
+
+    try {
+      const token = localStorage.getItem("userToken");
+      await axios.post(
+        `http://localhost:8000/api/contactusers/set-password`,
+        { password: password.trim() },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setPasswordSetMessage("Password set successfully! Redirecting...");
+      if (onLogin) onLogin();
+      setTimeout(() => navigate("/home"), 1500);
+    } catch (error) {
+      setPasswordSetMessage(error.response?.data?.message || "Failed to set password.");
+      setSettingPassword(false);
+    }
+  };
+
+  if (!tokenValid) {
+    return (
+      <div className="max-w-md mx-auto mt-20 p-6 border rounded-lg shadow-md bg-white text-center">
+        <p className="text-lg text-red-600">{message}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-md mx-auto mt-20 p-6 border rounded-lg shadow-md bg-white">
+      <p className="mb-6 text-center text-lg text-gray-800">{message}</p>
+      <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
+        <label htmlFor="password" className="font-semibold text-gray-700">
+          Set Password:
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={6}
+          placeholder="Enter new password"
+          disabled={settingPassword}
+          className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+        />
+        <button
+          type="submit"
+          disabled={settingPassword}
+          className={`py-2 rounded-md text-white font-semibold transition-colors ${
+            settingPassword ? "bg-green-300 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+          }`}
+        >
+          {settingPassword ? "Setting..." : "Set Password"}
+        </button>
+      </form>
+      {passwordSetMessage && (
+        <p
+          className={`mt-4 text-center ${
+            passwordSetMessage.includes("successfully") ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {passwordSetMessage}
+        </p>
+      )}
+    </div>
+  );
 };
 
 export default AcceptInvite;

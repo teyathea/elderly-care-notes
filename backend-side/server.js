@@ -11,12 +11,13 @@ import medicationRoutes from './routes/medicationRoutes.js';
 import medicalRecordsRoutes from './routes/medicalRecordsRoutes.js';
 import symptomsRoutes from './routes/symptomRoutes.js';
 
-import { initializeSocket } from '../backend-side/socket/socket.js';
+import socketHandler from './socket/socket.js';
 
 dotenv.config();
 connectDB();
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(cors());
 app.use(express.json());
@@ -29,10 +30,8 @@ app.use('/api', medicationRoutes);
 app.use('/api/medicalrecords', medicalRecordsRoutes);
 app.use('/api/symptoms', symptomsRoutes);
 
-const server = http.createServer(app);
-
 // Initialize socket.io and pass the server instance
-const io = initializeSocket(server);
+socketHandler(server);
 
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {

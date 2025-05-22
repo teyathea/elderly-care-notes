@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import bcrypt from 'bcryptjs';
 import ContactUser from '../models/ContactUser.js';
 
 const transporter = nodemailer.createTransport({
@@ -19,7 +20,7 @@ export const inviteUser = async (req, res) => {
       return res.status(400).json({ message: 'Contact already invited' });
     }
 
-    const invitationToken = jwt.sign({ email }, process.env.JWT_SECRET);
+    const invitationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '3d' });
 
     const newContact = new ContactUser({
       fullname,
@@ -39,9 +40,11 @@ export const inviteUser = async (req, res) => {
       to: email,
       subject: 'Invitation to Elderly App',
       html: `
-        <p>Hi ${fullname},</p>
-        <p>You are invited! Click the link to activate your account:</p>
-        <a href="${invitationLink}">${invitationLink}</a>
+        <h3>Hello ${fullname},</h3>
+        <p>You have been invited to join the Elderly App as a <strong>${role}</strong>.</p>
+        <p>Click the button below to accept your invite and activate your account:</p>
+        <a href="${invitationLink}">Accept Invite</a>
+        <p>This link will expire in 3 days.</p>
       `,
     });
 
@@ -57,32 +60,112 @@ export const acceptInvite = async (req, res) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const contact = await ContactUser.findOne({ email: payload.email });
+    const user = await ContactUser.findOne({ email: payload.email });
 
-    if (!contact) {
+    if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    if (!contact.isActive) {
-      contact.isActive = true;
-      contact.invitationToken = null;
-      await contact.save();
+    if (!user.isActive) {
+      user.isActive = true;
+      user.invitationToken = null;
+      await user.save();
     }
 
     const loginToken = jwt.sign(
-      { id: contact._id, role: contact.role },
+      { id: user._id, email: user.email, role: user.role, fullname: user.fullname, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
     res.status(200).json({
       token: loginToken,
-      fullname: contact.fullname,
-      email: contact.email,
-      role: contact.role,
+      fullname: user.fullname,
+      email: user.email,
+      role: user.role,
+      id: user._id,
+      message: "Invite accepted. Please set you password."
     });
   } catch (error) {
     return res.status(400).json({ message: 'Invalid or expired token' });
+  }
+};
+
+export const setPassword = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Authorization token missing" });
+  }
+  const token = authHeader.split(" ")[1];
+  const { password } = req.body;
+
+  if (!password) {
+    return res.status(400).json({ message: "Password is required" });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await ContactUser.findOne({ _id: payload.id, email: payload.email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.isActive) {
+      return res.status(400).json({ message: 'User is not active yet' });
+    }
+
+    // Hash and save the password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    await user.save();
+
+    res.status(200).json({ message: 'Password set successfully. You can now log in.' });
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid or expired token' });
+  }
+};
+
+export const loginContactUser = async (req, res) => {
+  const {email, password } = req.body;
+  try {
+    const user = await ContactUser.findOne({
+      email, role: { $in: ['family', 'caregiver']}
+    });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    if (!user.isActive) {
+      return res.status(400).json({ message: 'Account not activated. Please accept the invite first.' });
+    }
+
+    if (!user.password) {
+      return res.status(400).json({ message: 'Please set your password before logging in.' });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role, fullname: user.fullname, name: user.name},
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    res.status(200).json({
+      token,
+      user: {
+        fullname: user.fullname,
+        email: user.email,
+        role: user.role,
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
