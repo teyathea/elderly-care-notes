@@ -81,6 +81,57 @@ const uploadFile = async (req, res) => {
     }
 }
 
+const updateMedicalRecord = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { description, doctorName, category } = req.body;
+
+        const updatedRecord = await MedicalRecord.findByIdAndUpdate(
+            id,
+            { description, doctorName, category },
+            { new: true }
+        );
+
+        if (!updatedRecord) {
+            return res.status(404).json({ message: "Record not found" });
+        }
+
+        res.status(200).json({
+            message: "Record updated successfully",
+            error: false,
+            data: updatedRecord
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating medical record",
+            error: error.message
+        });
+    }
+}
+
+const deleteMedicalRecord = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const deletedRecord = await MedicalRecord.findByIdAndDelete(id)
+
+        if (!deletedRecord) {
+            return res.status(404).json({ message: "Record not found" })
+        }
+
+        res.status(200).json({
+            message: "Record deleted successfully",
+            error: false,
+            data: deletedRecord
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting medical record",
+            error: error.message
+        })
+    }
+}
+
 /////////////////////////////////
 //DOWNLOAD FILE WITH CORRECT NAME
 ////////////////////////////////
@@ -113,4 +164,4 @@ const downloadFile = async (req, res) => {
 }
 
 
-export {getAllMedicalRecords, addMedicalRecord, uploadFile, downloadFile}
+export {getAllMedicalRecords, addMedicalRecord, uploadFile, downloadFile, updateMedicalRecord, deleteMedicalRecord}
