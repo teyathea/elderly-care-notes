@@ -40,7 +40,7 @@ const AppointmentsModal = ({
     document.addEventListener("mousedown", handleOutsideClick);
     document.addEventListener("keydown", handleEscape);
 
-    // Cleanup: Remove event listeners when the component unmounts or onClose changes
+    // Cleanup event listeners when the component unmounts or when onClose changes
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("keydown", handleEscape);

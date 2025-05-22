@@ -89,16 +89,17 @@ const AppointmentPage = () => {
             if (day === null) {
               return (
                 <div
-                  key={index} 
+                  key={index}
                   className="p-4 border rounded calendar-day"
                   style={{ borderColor: 'var(--accent)' }}
                   onClick={() => handleDateClick(day)}
                 >
-                  {/* empty slot */}
+
                 </div>
               );
             }
 
+            // Format the date string for appointments e.g. "2025-10-01"
             const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
             const dayAppointments = getAppointmentsForDate(dateStr);
 
