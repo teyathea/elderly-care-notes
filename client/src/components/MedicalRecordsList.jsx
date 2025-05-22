@@ -64,6 +64,7 @@
 
 import React, { useEffect, useState } from "react";
 import MedicalRecordsModal from "../components/modals/MedicalRecordsModal";
+import "../styles/Global.css";
 
 export default function MedicalRecordsList() {
   const [records, setRecords] = useState([]);
@@ -104,7 +105,7 @@ export default function MedicalRecordsList() {
   if (error) return <p className="text-red-600">Error: {error}</p>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg">
       <h2 className="text-2xl font-semibold mb-4">Uploaded Medical Records</h2>
 
       {records.length === 0 ? (
@@ -113,8 +114,13 @@ export default function MedicalRecordsList() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {records.map((record) => (
             <div
-              key={record._id}
+              key={record._id || `temp-${Date.now()}-${Math.random()}`}
               className="border p-4 rounded-xl shadow hover:shadow-md transition bg-white flex flex-col gap-1 cursor-pointer"
+              style={{
+                backgroundColor: "var(--medium)",
+                border: "1px solid var(--accent)",
+                color: "white",
+              }}
               onClick={() => setSelectedRecord(record)}
             >
               <div><strong>Description:</strong> {record.description}</div>

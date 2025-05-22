@@ -47,6 +47,7 @@
 import React, { useState, useEffect } from "react";
 import UploadMedicalRecordsModal from "../components/modals/UploadMedicalRecordsModal";
 import MedicalRecordsModal from "../components/modals/MedicalRecordsModal";
+import "../styles/Global.css";
 
 export default function MedicalRecords() {
   const [records, setRecords] = useState([]);
@@ -110,12 +111,14 @@ export default function MedicalRecords() {
   ];
 
   return (
-    <div className="p-4">
+    <div className="p-4" style={{ backgroundColor: 'var(--light)' }}>
       {/* Title */}
-      <h1 className="text-2xl font-semibold text-center mb-4">Medical Records</h1>
+      <h1 className="text-3xl font-bold mb-6 mr-70 ml-70" style={{ color: 'var(--primary)' }}>Medical Records</h1>
 
       {/* Filter and Upload */}
-      <div className="border rounded-lg p-4 mb-6 bg-white shadow-md flex flex-wrap gap-4 items-center">
+      <div 
+        className="border rounded-lg p-4 mb-6 bg-white shadow-md flex flex-wrap gap-4 items-center" 
+        style={{ borderColor: 'var(--light)' }}>
         <select
           className="border rounded p-2"
           value={categoryFilter}
@@ -166,14 +169,19 @@ export default function MedicalRecords() {
         ) : (
           filteredRecords.map((record) => (
             <div
-              key={record._id}
+              key={record._id || `temp-${Date.now()}-${Math.random()}`}
               onClick={() => handleRecordClick(record)}
               className="cursor-pointer border p-4 rounded-lg shadow hover:bg-blue-50 transition bg-white"
+              style={{
+                backgroundColor: "var(--medium)",
+                border: "1px solid var(--light)",
+                color: "white",
+              }}
             >
               <p className="font-medium text-lg">{record.description}</p>
               <p className="text-sm text-gray-600">Doctor: {record.doctorName}</p>
               <p className="text-sm text-gray-600">Category: {record.category}</p>
-              <p className="text-sm text-gray-600">Uploaded: {new Date(record.createdAt).toLocaleString()}</p>
+              <p className="text-sm text-gray-600">Uploaded: {new Date(record.date).toLocaleString()}</p>
             </div>
           ))
         )}
