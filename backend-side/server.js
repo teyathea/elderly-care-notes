@@ -10,6 +10,7 @@ import notesFeedRoutes from './routes/notesFeedRoutes.js';
 import medicationRoutes from './routes/medicationRoutes.js';
 import medicalRecordsRoutes from './routes/medicalRecordsRoutes.js';
 import symptomsRoutes from './routes/symptomRoutes.js';
+import appointmentRoutes from './routes/appointmentRoutes.js';
 
 import { initializeSocket } from '../backend-side/socket/socket.js';
 
@@ -28,6 +29,7 @@ app.use('/api/notesfeed', notesFeedRoutes);
 app.use('/api', medicationRoutes);
 app.use('/api/medicalrecords', medicalRecordsRoutes);
 app.use('/api/symptoms', symptomsRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 const server = http.createServer(app);
 

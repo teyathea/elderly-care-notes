@@ -83,6 +83,8 @@ const uploadFile = async (req, res) => {
 
 const updateMedicalRecord = async (req, res) => {
     try {
+        console.log("Incoming PUT to update record with ID:", req.params.id);
+        
         const { id } = req.params
         const { description, doctorName, category } = req.body;
 
