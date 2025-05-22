@@ -59,7 +59,8 @@ export default function MedicalRecords() {
   const [monthFilter, setMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
-  useEffect(() => {
+  // Fetch records from the API when the component adds
+  const fetchRecords = () => {
     fetch("http://localhost:8000/api/medicalrecords/getAllRecords")
       .then((res) => res.json())
       .then((data) => {
@@ -67,6 +68,10 @@ export default function MedicalRecords() {
         setFilteredRecords(data);
       })
       .catch((err) => console.error("Fetch error:", err));
+  };
+
+  useEffect(() => {
+    fetchRecords();
   }, []);
 
   useEffect(() => {
@@ -91,9 +96,7 @@ export default function MedicalRecords() {
   };
 
   const handleRecordUpdate = (updatedRecord) => {
-    setRecords((prev) =>
-      prev.map((r) => (r._id === updatedRecord._id ? updatedRecord : r))
-    );
+    fetchRecords();
     setShowDetailsModal(false);
   };
 
@@ -125,8 +128,8 @@ export default function MedicalRecords() {
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
           <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>{category}</option>
           ))}
         </select>
 
@@ -169,7 +172,7 @@ export default function MedicalRecords() {
         ) : (
           filteredRecords.map((record) => (
             <div
-              key={record._id || `temp-${Date.now()}-${Math.random()}`}
+              key={record._id}
               onClick={() => handleRecordClick(record)}
               className="cursor-pointer border p-4 rounded-lg shadow hover:bg-blue-50 transition bg-white"
               style={{
@@ -181,7 +184,7 @@ export default function MedicalRecords() {
               <p className="font-medium text-lg">{record.description}</p>
               <p className="text-sm text-gray-600">Doctor: {record.doctorName}</p>
               <p className="text-sm text-gray-600">Category: {record.category}</p>
-              <p className="text-sm text-gray-600">Uploaded: {new Date(record.date).toLocaleString()}</p>
+              <p className="text-sm text-gray-600">Uploaded: {new Date(record.uploadAt).toLocaleString()}</p>
             </div>
           ))
         )}
@@ -191,7 +194,10 @@ export default function MedicalRecords() {
       {showUploadModal && (
         <UploadMedicalRecordsModal
           onClose={() => setShowUploadModal(false)}
-          onUpload={(newRecord) => setRecords((prev) => [...prev, newRecord])}
+          onUpload={() => {
+            fetchRecords();
+            setShowUploadModal(false);
+          }}
         />
       )}
 

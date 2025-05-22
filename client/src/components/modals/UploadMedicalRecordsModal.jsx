@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function UploadMedicalRecordsModal({ onClose }) {
+export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
   const [doctorName, setDoctorName] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
@@ -47,7 +47,9 @@ export default function UploadMedicalRecordsModal({ onClose }) {
         setCategory("");
         setUploadProgress(0);
         document.getElementById("fileInput").value = "";
+        
         onClose();
+        onUpload?.();
       } else {
         toast.error("Failed to upload file and data.");
         setUploadProgress(0);
@@ -70,8 +72,8 @@ export default function UploadMedicalRecordsModal({ onClose }) {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white w-full max-w-lg p-6 rounded-xl shadow-lg">
+    <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
+      <div className="bg-[var(--light)] w-full max-w-lg p-6 rounded-xl shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Upload Medical Record</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
@@ -106,8 +108,8 @@ export default function UploadMedicalRecordsModal({ onClose }) {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>{category}</option>
               ))}
             </select>
           </div>
