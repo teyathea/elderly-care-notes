@@ -156,7 +156,7 @@ export default function MedicalRecordsModal({
           <div>
             <label className="font-medium">Uploaded:</label>
             <p className="text-gray-700">
-              {new Date(record.createdAt).toLocaleString()}
+              {new Date(record.uploadAt).toLocaleString()}
             </p>
           </div>
 

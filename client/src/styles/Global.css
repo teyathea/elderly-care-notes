@@ -52,3 +52,7 @@ button:hover {
   background-color: var(--medium);
   color: var(--secondary);
 }
+
+label {
+  @apply !text-black 
+}
