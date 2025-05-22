@@ -36,7 +36,7 @@ const storage = new CloudinaryStorage({
         return {
             folder: 'documents', // folder name in cloudinary
             allowed_formats: docFormats,
-            resource_type: 'auto', // automatic detects the file type.
+            resource_type: 'raw', // automatic detects the file type.
             format: ext,
             public_id: baseName, // set filename
             use_filename: true, // tells cloudinary to use your public_id

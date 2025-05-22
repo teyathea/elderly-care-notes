@@ -4,6 +4,7 @@ export default function MedicalRecordsList() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
 
   useEffect(() => {
     fetch("http://localhost:8000/api/medicalrecords/getAllRecords") // your GET endpoint
@@ -41,11 +42,11 @@ export default function MedicalRecordsList() {
 
               {record.fileUrl && (
                 <>
-                <a href={record.fileUrl} rel="noopener noreferrer" download={record.oroiginalName}>
-                  View
+                <a href={record.fileUrl} rel="noopener noreferrer" download={record.originalName}>
+                  View |
                 </a>
-
-                <a href={record.fileUrl.replace('/upload/', '/upload/fl_attachment:')} rel="noopener noreferrer" download={record.originalName} >
+                
+                <a href={`http://localhost:8000/api/medicalrecords/download/${record._id}`} rel="noopener noreferrer" >
                     Download
                 </a>
                 </>
