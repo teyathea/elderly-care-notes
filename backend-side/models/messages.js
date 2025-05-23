@@ -1,3 +1,4 @@
+// models/messages.js
 import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({
@@ -19,10 +20,14 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: [true, "Content is required"],
   },
+  roomId: {
+    type: String,
+  },
   timestamp: {
     type: Date,
     default: Date.now,
   },
 });
 
-export const Message = mongoose.model('Message', messageSchema);
+const Message = mongoose.model("Message", messageSchema)
+export { Message }
