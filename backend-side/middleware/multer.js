@@ -1,18 +1,20 @@
-// config/multer.js (or wherever you like)
-import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+// // config/multer.js (or wherever you like)
+// import multer from 'multer'; // Ffor file uploads
+// import path from 'path';  // for managing file/directory
+// import { fileURLToPath } from 'url'; // to get the actual path of the file
+// import { dirname } from 'path'; // to get the directory name
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// //  
+// const __filename = fileURLToPath(import.meta.url); // full path
+// const __dirname = dirname(__filename); // foldr path
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '../uploads')),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + '-' + file.originalname),
-});
+// // multer srtorage configuration local storage
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, path.join(__dirname, '../uploads')),
+//   filename: (req, file, cb) =>
+//     cb(null, Date.now() + '-' + file.originalname),
+// });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
-export default upload;
+// export default upload;

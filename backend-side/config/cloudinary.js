@@ -5,17 +5,29 @@ import dotenv from 'dotenv'; // for environment variables
 
 dotenv.config(); // load environment variables from .env
 
+
+///////////////////////////
+// cloudinary configuration
+///////////////////////////
+
 cloudinary.config({ // config for cloudinary
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+
+/////////////////////////////
+// storage set up 
+// what folder name, extension
+/////////////////////////////
+
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: (req, file) => {
-    const ext = file.mimetype.split('/')[1];
+    const ext = file.mimetype.split('/')[1]; // extract file extension images/jpeg => jpeg
 
+    //file extension
     const imageFormats = ['jpg', 'jpeg', 'png', 'gif'];
     const docFormats = ['pdf', 'docx', 'pptx'];
 
@@ -49,6 +61,6 @@ const storage = new CloudinaryStorage({
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage }); // multer middleware for handling multipart/form-data
 
 export default upload;

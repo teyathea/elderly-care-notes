@@ -74,7 +74,7 @@ const NotesFeed = () => {
         {notes.length === 0 ? (
           <p className="text-center italic text-gray-500">No notes yet.</p>
         ) : (
-          notes.map((note) => (
+          [...notes].sort((a,b) => new Date(b.date) - new Date(a.date)).map((note) => (
             <div
               key={note._id || `temp-${Date.now()}-${Math.random()}`} // unique key
               className="rounded-md p-3 mb-2 cursor-pointer transition duration-200 flex justify-between items-start"

@@ -4,7 +4,7 @@ const profilesettingsSchema = new Schema({
     // get uder id from token
 userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'MainUser', 
+    ref: 'MainUser', // came from the mongoose model name
     required: true,
     unique: true,
 },

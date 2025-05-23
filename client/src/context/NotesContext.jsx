@@ -103,7 +103,7 @@ export function NotesProvider({ children }) {
 
             dispatch({
                 type: ACTION_TYPES.UPDATE_NOTE,
-                data: response.data.data
+                data: response.data.data // returns the updated note
             });
 
             console.log("Updated note:", response.data);

@@ -21,13 +21,12 @@ const getAllNotesFeed = async (req, res) => {
 }
 
 
-////////////////////
-// fetch user notes
-//////////////////
+///////////////////////////////////////////////////////////////////////
+// fetch user notes // If you want *only* the notes this user created:
+///////////////////////////////////////////////////////////////////////
 
 const getUserNotesFeed = async (req, res) => {
   try {
-    // If you want *only* the notes this user created:
     const userId = req.user.id; // id from token
     const notes = userId
       ? await NotesFeed.find({ created_by: userId })
@@ -38,6 +37,9 @@ const getUserNotesFeed = async (req, res) => {
     res.status(500).json({ message: "Error fetching notes", error: error.message });
   }
 };
+/////////////
+//add notes 
+////////////
 
 const addNote = async (req, res) => {
     try {
