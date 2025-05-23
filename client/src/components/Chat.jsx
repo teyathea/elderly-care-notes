@@ -25,7 +25,6 @@ const Chat = ({ token, userName, userEmail, userRole }) => {
   }, [messages]);
 
   const handleSend = () => {
-  console.log('User disconnected:', socket.id);    
     if (content.trim() && socket) {
       socket.emit("send_message", {
         text: content,
