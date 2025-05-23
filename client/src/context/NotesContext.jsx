@@ -17,12 +17,16 @@ export function NotesProvider({ children }) {
     }
 
     useEffect(() => { // Fetch notes when component mounts
-        fetchNotes();
+        fetchUserNotes();
     }, []);
 
 
+    
+//////////////////
+// fetch all notes
+//////////////////
 
-    const fetchNotes = async () => {
+        const fetchAllNotes = async () => {
         try {
             const response = await axios.get('http://localhost:8000/api/notesfeed/allnotes') // get all notes from backend
             console.log("Fetched notes:", response.data);
@@ -37,9 +41,37 @@ export function NotesProvider({ children }) {
     }
 
 
+//////////////////
+// fetch user notes
+//////////////////
+    const fetchUserNotes = async () => {
+        try {
+            const token = localStorage.getItem('userToken')
+            const response = await axios.get('http://localhost:8000/api/notesfeed/allusernotes', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }) // get all notes from backend
+            console.log("Fetched notes:", response.data);
+            dispatch({
+                type: ACTION_TYPES.LOAD_NOTES,
+                data: response.data
+            })
+
+        } catch (error) {
+            console.error("Error fetching notes from database", error)
+        }
+    }
+
+// add notes to dbase
     const addNotesToDb = async (noteData) => {
         try {
-            const response = await axios.post('http://localhost:8000/api/notesfeed/addnote', noteData)
+            const token = localStorage.getItem('userToken') // gets the token from local storage
+            const response = await axios.post('http://localhost:8000/api/notesfeed/addnote', noteData, {
+                headers: {
+                    Authorization:`Bearer ${token}`,
+                }
+            })
             dispatch({
                 type: ACTION_TYPES.ADD_NOTE,
                 data: response.data.data
@@ -92,7 +124,8 @@ export function NotesProvider({ children }) {
             addNotesToDb,
             updateNoteInDb,
             deleteNotesToDb,
-            fetchNotes,
+            fetchUserNotes,
+            fetchAllNotes,
             capitalizeSentence
 
         }}>

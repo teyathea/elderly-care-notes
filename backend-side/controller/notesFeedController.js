@@ -1,6 +1,10 @@
 import NotesFeed from "../models/NotesFeed.js";
 
 
+//////////////////
+// fetch all notes
+//////////////////
+
 const getAllNotesFeed = async (req, res) => {
     try {
         const notes = await NotesFeed.find()
@@ -17,30 +21,23 @@ const getAllNotesFeed = async (req, res) => {
 }
 
 
-// const getUserNotes = async (req, res) => {
-//     try {
-//         const userId = req.user.id 
-//         const notes = await NotesFeed.find({ created_by : userId }).populate('created_by', 'fullname email')
-        
-//         res.status(200).json(notes)
-//     } catch ( error ) {
-//         res.status(500).json({message: "Error fetching notes"})
-//         }
-// }
+////////////////////
+// fetch user notes
+//////////////////
 
-// const getAllNotesFeed = async (req, res) => {
-//   try {
-//     // If you want *only* the notes this user created:
-//     const userId = req.user?.id;
-//     const notes = userId
-//       ? await NotesFeed.find({ createdBy: userId })
-//       : await NotesFeed.find().populate("createdBy", "username");
+const getUserNotesFeed = async (req, res) => {
+  try {
+    // If you want *only* the notes this user created:
+    const userId = req.user.id; // id from token
+    const notes = userId
+      ? await NotesFeed.find({ created_by: userId })
+      : await NotesFeed.find().populate("created_by", "fullname email");
 
-//     res.status(200).json(notes);
-//   } catch (error) {
-//     res.status(500).json({ message: "Error fetching notes", error: error.message });
-//   }
-// };
+    res.status(200).json(notes);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching notes", error: error.message });
+  }
+};
 
 const addNote = async (req, res) => {
     try {
@@ -114,4 +111,4 @@ const updateNote = async (req, res) => {
 }
 
 
-export {getAllNotesFeed, addNote, deleteNote, updateNote, } //getUserNotes
+export {addNote, deleteNote, updateNote, getAllNotesFeed, getUserNotesFeed} //

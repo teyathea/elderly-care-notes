@@ -5,6 +5,7 @@ export const ACTION_TYPES = {
     ADD_NOTE: "ADD_NOTE",
     LOAD_NOTES: "LOAD_NOTES",
     UPDATE_NOTE: "UPDATE_NOTE",
+    CLEAR_NOTES: "CLEAR_NOTES",
     DELETE_NOTE: "DELETE_NOTE",
 
     //modal
