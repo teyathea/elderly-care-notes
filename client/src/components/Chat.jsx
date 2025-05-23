@@ -1,38 +1,45 @@
-import { useEffect, useState, useRef } from "react";
-import { io } from "socket.io-client";
+import { useEffect, useState, useRef } from 'react';
+import io from 'socket.io-client';
 
-const Chat = ({ token, userName, userEmail, userRole }) => {
-  const [socket, setSocket] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [content, setContent] = useState("");
+const ChatPopup = ({ token, roomId }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [content, setContent] = useState('');
   const messagesEndRef = useRef(null);
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    const socketIo = io(import.meta.env.VITE_BACKEND_URL, {
+    if (!roomId || !isOpen) return;
+
+    const socket = io(import.meta.env.VITE_BACKEND_URL, {
       auth: { token }
     });
 
-    socketIo.on("initial_message", setMessages);
-    socketIo.on("receive_message", (msg) => setMessages((prev) => [...prev, msg]));
+    socket.on('connect', () => {
+      socket.emit('join_room', { roomId });
+    });
 
-    setSocket(socketIo);
-    return () => socketIo.disconnect();
-  }, [token]);
+    socket.on('initial_message', setMessages);
+    socket.on('receive_message', (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });
+
+    socketRef.current = socket;
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [roomId, isOpen, token]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleSend = () => {
-    if (content.trim() && socket) {
-      socket.emit("send_message", {
-        text: content,
-        name: userName,
-        email: userEmail,
-        role: userRole,
-      });
-      setContent("");
+    const socket = socketRef.current;
+    if (socket && content.trim()) {
+      socket.emit('send_message', { roomId, text: content.trim() });
+      setContent('');
     }
   };
 
@@ -49,22 +56,29 @@ const Chat = ({ token, userName, userEmail, userRole }) => {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 shadow-2xl rounded-2xl flex flex-col bg-white border border-gray-300" style={{ height: "400px" }}>
+    <div className="fixed bottom-4 right-4 w-80 h-[400px] flex flex-col bg-white border border-gray-300 rounded-2xl shadow-2xl">
+      {/* Header */}
       <div className="bg-blue-600 text-white p-3 font-semibold flex justify-between items-center rounded-t-2xl">
         Chat
-        <button onClick={() => setIsOpen(false)} className="font-bold hover:text-gray-300" aria-label="Close Chat">
+        <button
+          onClick={() => setIsOpen(false)}
+          className="font-bold hover:text-gray-300"
+          aria-label="Close Chat"
+        >
           ✕
         </button>
       </div>
 
+      {/* Messages */}
       <div className="flex-1 p-4 overflow-y-auto">
         {messages.map((msg, idx) => (
-          <div key={idx} className="mb-3 text-sm border-b border-gray-200 pb-2">
-            <div className="flex justify-between items-start">
+          <div key={idx} className="mb-3 text-sm border-b pb-2 border-gray-200">
+            <div className="flex justify-between">
               <div>
-                <strong>{msg.name}</strong> <em className="text-gray-600">({msg.role})</em>
+                <strong>{msg.name}</strong>{' '}
+                <em className="text-gray-600">({msg.role})</em>
               </div>
-              <div className="text-gray-400 text-xs text-right">
+              <div className="text-xs text-gray-400">
                 {new Date(msg.timestamp).toLocaleString()}
               </div>
             </div>
@@ -74,6 +88,7 @@ const Chat = ({ token, userName, userEmail, userRole }) => {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Input */}
       <div className="flex border-t p-2">
         <input
           type="text"
@@ -81,9 +96,12 @@ const Chat = ({ token, userName, userEmail, userRole }) => {
           className="flex-1 border rounded-l-xl px-3 py-2 focus:outline-none"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
         />
-        <button onClick={handleSend} className="bg-blue-600 text-white px-4 rounded-r-xl hover:bg-blue-700">
+        <button
+          onClick={handleSend}
+          className="bg-blue-600 text-white px-4 rounded-r-xl hover:bg-blue-700"
+        >
           Send
         </button>
       </div>
@@ -91,4 +109,4 @@ const Chat = ({ token, userName, userEmail, userRole }) => {
   );
 };
 
-export default Chat;
+export default ChatPopup;

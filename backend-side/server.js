@@ -10,9 +10,10 @@ import notesFeedRoutes from './routes/notesFeedRoutes.js'
 import medicationRoutes from './routes/medicationRoutes.js';
 import medicalRecordsRoutes from './routes/medicalRecordsRoutes.js';
 import profileSettingsRoutes from './routes/profileSettingsRoutes.js';
-import './jobs/autoDeleteMedications.js'
 import symptomsRoutes from './routes/symptomRoutes.js';
+import chatRoutes from './routes/chatRoutes.js'
 
+import './jobs/autoDeleteMedications.js'
 import socketHandler from './socket/socket.js';
 
 dotenv.config();
@@ -34,7 +35,7 @@ app.use('/api', medicationRoutes);
 app.use('/api/medicalrecords', medicalRecordsRoutes)
 app.use('/api/symptoms', symptomsRoutes);
 app.use('/api/profilesettings', profileSettingsRoutes )
-
+app.use('/api/chatRoom', chatRoutes)
 
 // initialize socket.io and pass the server instance
 socketHandler(server);

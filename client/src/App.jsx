@@ -81,7 +81,7 @@ function App() {
             <Route path="/invite" element={<AcceptInvite />} />
             <Route path='/users-account' element={<UserPage />} />
           </Routes>
-          <ChatPopup token={localStorage.getItem('userToken')} />
+          <ChatPopup token={localStorage.getItem('userToken')} roomId={12345} />
 
         </main>
       </div>
