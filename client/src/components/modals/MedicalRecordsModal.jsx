@@ -174,7 +174,7 @@ export default function MedicalRecordsModal({
               <iframe
                 src={record.fileUrl}
                 title="Medical Document"
-                className="w-[60%] min-h-[70vh] mt-2"
+                className="w-[100%] min-h-[70vh] mt-2"
               ></iframe>
             </div>
           )}
