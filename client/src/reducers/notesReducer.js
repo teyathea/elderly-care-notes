@@ -42,6 +42,11 @@ export function notesReducer(state, action) {
                     ...state,
                     notes: action.data || [] // loading all notes from the database
                 }
+            case 'CLEAR_NOTES':
+                return {
+                    ...state,
+                    notes: []
+                }
             case 'DELETE_NOTE':
                 return {
                     ...state,

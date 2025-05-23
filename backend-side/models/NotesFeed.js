@@ -13,16 +13,16 @@ const notesfeedSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    // created_by: { 
-    //     type: mongoose.Schema.Types.ObjectId, 
-    //     ref: 'creatorModel', 
-    //     required: true
-    // },
-    // creatorModel: {
-    //     type: String,
-    //     required: true,
-    //     enum: ['MainUser', 'ContactUser'] // only these two types of users can create notes
-    // }
+    created_by: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'creatorModel', 
+        required: true
+    },
+    creatorModel: {
+        type: String,
+        required: true,
+        enum: ['MainUser', 'ContactUser'] // only these two types of users can create notes
+    }
 })
 
 const NotesFeed = mongoose.model('NotesFeed', notesfeedSchema) // model name is NotesFeed

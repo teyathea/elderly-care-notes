@@ -39,7 +39,7 @@ const getProfileDetails = async (req, res) => {
 
 const updateProfileDetails = async(req, res) => {
     try {
-        const userId = req.user.id 
+        const userId = req.user.id  
 
         const updateProfile = await ProfileSetting.findOneAndUpdate(
             { userId },
@@ -69,7 +69,7 @@ const updatePassword = async (req, res) => {
 
 
     try {
-        const userId = req.user.id 
+        const userId = req.user.id  
         const user = await MainUser.findById(userId)
 
         if(!user) {

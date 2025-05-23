@@ -21,9 +21,7 @@ const NotesFeed = () => {
     dispatch({type: ACTION_TYPES.SET_IS_EDIT, payload: true})
     dispatch({type: ACTION_TYPES.SET_CURRENT_NOTE, payload: note });
     dispatch({ type: ACTION_TYPES.SET_MODAL_VISIBILITY, payload: true})
-  console.log("Clicked note to edit:", note);
-  console.log("Current isEdit (before update):", isEdit);
-  console.log("Current currentNote (before update):", currentNote);
+    
   };
 
   // Save Note (Add or Update)

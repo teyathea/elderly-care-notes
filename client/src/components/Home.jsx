@@ -3,12 +3,13 @@ import { useEffect, useState, useContext } from "react";
 import { NotesContext } from "../context/NotesContext";
 
 export default function Home() {
-    const {state, dispatch, fetchNotes, capitalizeSentence} = useContext(NotesContext)
+    const {state, dispatch, fetchAllNotes, fetchUserNotes, capitalizeSentence} = useContext(NotesContext)
     const {notes} = state
 
     useEffect(() => {
-    fetchNotes();
+    fetchAllNotes(); // fetch all notes
 }, []);
+
 
     return (
         <>
