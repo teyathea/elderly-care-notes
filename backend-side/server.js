@@ -1,8 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-// const uploadRoutes = require('./routes/upload');
-
-import dotenv from 'dotenv'
+import http from 'http';
+import dotenv from 'dotenv';
 
 import connectDB from "./config/DatabaseConnection.js";
 import mainUserRoutes from './routes/mainUserRoutes.js'
@@ -11,14 +10,18 @@ import notesFeedRoutes from './routes/notesFeedRoutes.js'
 import medicationRoutes from './routes/medicationRoutes.js';
 import medicalRecordsRoutes from './routes/medicalRecordsRoutes.js';
 import profileSettingsRoutes from './routes/profileSettingsRoutes.js';
-
 import './jobs/autoDeleteMedications.js'
 import symptomsRoutes from './routes/symptomRoutes.js';
+
+import socketHandler from './socket/socket.js';
+
+dotenv.config();
+
 const app = express();
+const server = http.createServer(app); // create an HTTP server using the express app
 
 // connection to db
 connectDB();
-dotenv.config()
 
 app.use(cors());
 app.use(express.json())
@@ -32,5 +35,9 @@ app.use('/api/medicalrecords', medicalRecordsRoutes)
 app.use('/api/symptoms', symptomsRoutes);
 app.use('/api/profilesettings', profileSettingsRoutes )
 
+
+// initialize socket.io and pass the server instance
+socketHandler(server);
+
 const PORT = process.env.PORT || 8000
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`))

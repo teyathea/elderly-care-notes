@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 
 const Chat = ({ token, userName, userEmail, userRole }) => {
   const [socket, setSocket] = useState(null);
