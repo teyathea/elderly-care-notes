@@ -1,5 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import '../../styles/Global.css'
 
 export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
   const [doctorName, setDoctorName] = useState("");
@@ -81,7 +82,7 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-medium">Doctor’s Name:</label>
+            <label className=" block font-medium">Doctor’s Name:</label>
             <input
               type="text"
               className={`w-full border rounded px-3 py-2 mt-1 ${!doctorName && uploadProgress === 0 ? 'border-red-500' : 'border-gray-300'}`}
@@ -91,7 +92,7 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
           </div>
 
           <div>
-            <label className="block font-medium">Description:</label>
+            <label className=" block font-medium">Description:</label>
             <textarea
               placeholder="Type description..."
               className={`w-full border rounded px-3 py-2 mt-1 ${!description && uploadProgress === 0 ? 'border-red-500' : 'border-gray-300'}`}

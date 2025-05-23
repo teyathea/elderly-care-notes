@@ -156,15 +156,19 @@ export default function MedicalRecords() {
             <option key={year} value={year}>{year}</option>
           ))}
         </select>
+      </div>
 
+      
+
+    <div>
+      <div className="flex justify-end mb-2">
         <button
           onClick={() => setShowUploadModal(true)}
-          className="ml-auto bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
-        >
+          className="ml-auto bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
           Upload
         </button>
       </div>
-
+       
       {/* Records List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredRecords.length === 0 ? (
@@ -189,6 +193,7 @@ export default function MedicalRecords() {
           ))
         )}
       </div>
+</div>
 
       {/* Upload Modal */}
       {showUploadModal && (

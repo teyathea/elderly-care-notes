@@ -2,6 +2,14 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import MainUser from '../models/MainUser.js';
 
+import ProfileSetting from '../models/ProfileSettings.js'; // import schema
+
+
+///////////////////////////////////////
+// When user registers, automatically 
+// create a profile settings with their 
+// information as "null"
+//////////////////////////////////////
 export const registerAdmin = async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
@@ -19,7 +27,20 @@ export const registerAdmin = async (req, res) => {
       role: 'admin',
     });
 
-    await newAdmin.save();
+    await newAdmin.save(); // save main user to dbase first
+
+
+//////////////////////////////////////////////////////////////
+// This is where you would create the associated user profile
+// (e.g., in a separate UserProfile model)
+//////////////////////////////////////////////////////////////
+
+     // then Create the associated user profile
+    await ProfileSetting.create({
+      userId: newAdmin._id,
+
+    });
+
     res.status(201).json({ message: 'Admin registered' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -36,7 +57,10 @@ export const loginUser = async (req, res) => {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(400).json({ message: 'Invalid email or password' });
 
-    const token = jwt.sign({ id: user._id, role: user.role, fullname: user.fullname }, process.env.JWT_SECRET, {
+/////////////////////////////////////////////////
+// Generates JWT token for the user gets the "id"
+/////////////////////////////////////////////////
+    const token = jwt.sign({ id: user._id, role: user.role, fullname: user.fullname, userType: 'MainUser' }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 

@@ -15,8 +15,13 @@ const notesfeedSchema = new Schema({
     },
     // created_by: { 
     //     type: mongoose.Schema.Types.ObjectId, 
-    //     ref: 'ContactUser', 
+    //     ref: 'creatorModel', 
     //     required: true
+    // },
+    // creatorModel: {
+    //     type: String,
+    //     required: true,
+    //     enum: ['MainUser', 'ContactUser'] // only these two types of users can create notes
     // }
 })
 

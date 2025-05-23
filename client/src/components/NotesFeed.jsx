@@ -36,7 +36,7 @@ const NotesFeed = () => {
 
     try {
       if (currentNote._id) {
-        await updateNoteInDb(currentNote)
+        await updateNoteInDb( currentNote)
       } else {
         await addNotesToDb({ ...currentNote })// Add a new note
       }
@@ -58,13 +58,12 @@ const NotesFeed = () => {
   return (
     <div
       className="p-4 min-h-screen flex flex-col items-center"
-      // style={{ backgroundColor: "var(--secondary)" }}
     >
       <div className="w-full max-w-[1000px] flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold pr-170" style={{ color: "var(--primary)" }}>
           Shared Notes
         </h2>
-        <button onClick={handleAddClick}>+ Add</button> 
+        <button onClick={handleAddClick}>Add</button> 
       </div>
 
       <div
