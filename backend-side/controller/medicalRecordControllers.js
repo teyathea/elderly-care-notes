@@ -41,6 +41,9 @@ const addMedicalRecord = async (req, res) => {
     }
 }
 
+//////////////
+//Upload File
+/////////////
 
 const uploadFile = async (req, res) => {
     try {
@@ -64,7 +67,6 @@ const uploadFile = async (req, res) => {
         })
 
         const savedRecord = await newRecord.save()
-        
         
         res.status(200).json({
             message: "File Uploaded Successfully",
@@ -136,7 +138,7 @@ const deleteMedicalRecord = async (req, res) => {
 
 /////////////////////////////////
 //DOWNLOAD FILE WITH CORRECT NAME
-////////////////////////////////
+/////////////////////////////////
 const downloadFile = async (req, res) => {
     try {
         const record = await MedicalRecord.findById(req.params.recordId)

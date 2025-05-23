@@ -4,7 +4,7 @@ import { Message } from '../models/messages.js'; // correct import path
 const chatRoomSchema = new mongoose.Schema({
   roomId: {
     type: String,
-    required: true,
+    // required: true,
     unique: true,
   },
   _id: {

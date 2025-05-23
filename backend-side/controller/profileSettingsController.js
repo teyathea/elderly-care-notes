@@ -2,13 +2,13 @@ import ProfileSetting from "../models/ProfileSettings.js";
 import MainUser from "../models/MainUser.js";
 import bcrypt from "bcryptjs";
 
+/////////////////////
+//get profile details
+/////////////////////
+
 const getProfileDetails = async (req, res) => {
     try {
-/////////////////////////////////////////////////////////
-// this is the id from the token you 
-// if the token uses id or userId or _id this is crucial
-/////////////////////////////////////////////////////////
-        const userId = req.user.id 
+        const userId = req.user.id  // id from the token, either id, userId or _id, check it in the authentication
 
         const profileDetails = await ProfileSetting.findOne({ userId })
 
@@ -19,14 +19,11 @@ const getProfileDetails = async (req, res) => {
                 })
             }
 
-            // res.status(200).json({
-            //     message: "Profile fetched successfully",
-            //     error: false,
-            //     data: profileDetails // returns the profile details
-            // })
-
-                res.json(profileDetails);
-
+            res.status(200).json({
+                message: "Profile fetched successfully",
+                error: false,
+                data: profileDetails // returns the profile details
+            })
         
     } catch (error) {
         res.status(500).json({
@@ -36,6 +33,7 @@ const getProfileDetails = async (req, res) => {
         
     }
 }
+
 
 const updateProfileDetails = async(req, res) => {
     try {
@@ -66,8 +64,6 @@ const updateProfileDetails = async(req, res) => {
 
 const updatePassword = async (req, res) => {
     const {currentPassword, newPassword} = req.body
-
-
     try {
         const userId = req.user.id  
         const user = await MainUser.findById(userId)

@@ -41,11 +41,11 @@ const medicalrecordSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    originalName: {
+    originalName: { // stores original name of file upload
         type: String,
     }, 
     mimeType: {
-        type: String,
+        type: String, // e.g image/jpeg, application/pdf
     } ,
 
 

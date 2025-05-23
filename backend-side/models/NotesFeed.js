@@ -13,9 +13,9 @@ const notesfeedSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    created_by: { 
+    created_by: {  // tracks who created it
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'creatorModel', 
+        refPath: 'creatorModel', 
         required: true
     },
     creatorModel: {

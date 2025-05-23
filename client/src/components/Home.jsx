@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { NotesContext } from "../context/NotesContext";
 
 export default function Home() {
@@ -56,7 +56,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-none outline-none resize-none h-40 overflow-y-auto space-y-2">
                     {[...notes]
                         .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by newest
-                        .slice(0, 7) // Show only the latest 5 notes
+                        .slice(0, 6) // Show only the latest 6 notes 
                         .map((note) => (
                             <div key={note._id} className="bg-green-200 p-2">
                                 <h3 className="capitalize font-semibold">Title: {note.title}</h3>
