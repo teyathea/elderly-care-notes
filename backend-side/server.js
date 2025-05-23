@@ -1,41 +1,36 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import http from 'http';
+// const uploadRoutes = require('./routes/upload');
+
+import dotenv from 'dotenv'
 
 import connectDB from "./config/DatabaseConnection.js";
-import mainUserRoutes from './routes/mainUserRoutes.js';
-import contactUserRoutes from './routes/contactUserRoutes.js';
-import notesFeedRoutes from './routes/notesFeedRoutes.js';
+import mainUserRoutes from './routes/mainUserRoutes.js'
+import contactUserRoutes from './routes/contactUserRoutes.js'
+import notesFeedRoutes from './routes/notesFeedRoutes.js'
 import medicationRoutes from './routes/medicationRoutes.js';
 import medicalRecordsRoutes from './routes/medicalRecordsRoutes.js';
+import profileSettingsRoutes from './routes/profileSettingsRoutes.js';
+
+import './jobs/autoDeleteMedications.js'
 import symptomsRoutes from './routes/symptomRoutes.js';
-import appointmentRoutes from './routes/appointmentRoutes.js';
-
-import socketHandler from './socket/socket.js';
-
-dotenv.config();
-connectDB();
-
 const app = express();
-const server = http.createServer(app);
+
+// connection to db
+connectDB();
+dotenv.config()
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json())
 
-// API routes
+// routing 
 app.use('/api/mainusers', mainUserRoutes);
-app.use('/api/contactusers', contactUserRoutes);
-app.use('/api/notesfeed', notesFeedRoutes);
+app.use('/api/contactusers', contactUserRoutes)
+app.use('/api/notesfeed', notesFeedRoutes)
 app.use('/api', medicationRoutes);
-app.use('/api/medicalrecords', medicalRecordsRoutes);
+app.use('/api/medicalrecords', medicalRecordsRoutes)
 app.use('/api/symptoms', symptomsRoutes);
-app.use('/api/appointments', appointmentRoutes);
+app.use('/api/profilesettings', profileSettingsRoutes )
 
-// Initialize socket.io and pass the server instance
-socketHandler(server);
-
-const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 8000
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

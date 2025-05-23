@@ -16,7 +16,7 @@ const notesfeedSchema = new Schema({
     // created_by: { 
     //     type: mongoose.Schema.Types.ObjectId, 
     //     ref: 'ContactUser', 
-    //     required: true
+    //     // required: true
     // }
 })
 

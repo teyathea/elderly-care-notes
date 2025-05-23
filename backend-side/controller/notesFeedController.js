@@ -76,7 +76,7 @@ const deleteNote = async (req, res) => {
 const updateNote = async (req, res) => {
     try {
         const noteId = req.params.id; // get note id from users request
-        const { title, description } = req.body;
+        const { title, description } = req.body; // 
 
         const updatedNote = await NotesFeed.findByIdAndUpdate(noteId, {title, description, date: Date.now()}, {new: true});
 

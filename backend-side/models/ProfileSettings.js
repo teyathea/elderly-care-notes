@@ -1,6 +1,13 @@
 import mongoose, {Schema} from "mongoose"; 
 
-const userprofileSchema = new Schema({
+const profilesettingsSchema = new Schema({
+    // get uder id from token
+userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MainUser',
+    required: true,
+    unique: true,
+},
     contactNumber: {
         type: String,
         default: null
@@ -18,7 +25,7 @@ const userprofileSchema = new Schema({
         type: Date,
         default: null,
     }
-})
+}, { timestamps: true });
 
-const UserProfile = mongoose.nodel('UserProfile', userprofileSchema)
-export default UserProfile
+const ProfileSetting = mongoose.model('ProfileSetting', profilesettingsSchema)
+export default ProfileSetting
