@@ -16,6 +16,18 @@ const getAllNotesFeed = async (req, res) => {
     }
 }
 
+
+// const getUserNotes = async (req, res) => {
+//     try {
+//         const userId = req.user.id 
+//         const notes = await NotesFeed.find({ created_by : userId }).populate('created_by', 'fullname email')
+        
+//         res.status(200).json(notes)
+//     } catch ( error ) {
+//         res.status(500).json({message: "Error fetching notes"})
+//         }
+// }
+
 // const getAllNotesFeed = async (req, res) => {
 //   try {
 //     // If you want *only* the notes this user created:
@@ -34,12 +46,16 @@ const addNote = async (req, res) => {
     try {
         const {title, description} = req.body
 
-        // const userId = req.user._id // get user id from token
+        const userId = req.user.id // get user id from JWT token
+        const userType = req.user.userType // get user type from JWT token
+
         const newNote = new NotesFeed({
             title,
             description,
             date: Date.now(),
-            // created_by: req.user._id
+            created_by: userId,
+            creatorModel: userType
+
         })
         const savedNote = await newNote.save() // saving to mongodb
         res.status(201).json({
@@ -98,4 +114,4 @@ const updateNote = async (req, res) => {
 }
 
 
-export {getAllNotesFeed, addNote, deleteNote, updateNote}
+export {getAllNotesFeed, addNote, deleteNote, updateNote, } //getUserNotes

@@ -18,6 +18,7 @@ const MainUserSchema = new mongoose.Schema({
         type: String, 
         default: 'admin' 
     },
+
 }, { 
     timestamps: true 
 });

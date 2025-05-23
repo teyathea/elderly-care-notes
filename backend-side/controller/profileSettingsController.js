@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 
 const getProfileDetails = async (req, res) => {
     try {
-        /////////////////////////////////////////////////////////
-        // this is the id from the token you 
-        // if the token uses id or userId or _id this is crucial
-        /////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+// this is the id from the token you 
+// if the token uses id or userId or _id this is crucial
+/////////////////////////////////////////////////////////
         const userId = req.user.id 
 
         const profileDetails = await ProfileSetting.findOne({ userId })

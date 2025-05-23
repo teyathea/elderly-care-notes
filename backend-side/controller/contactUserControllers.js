@@ -73,7 +73,7 @@ export const acceptInvite = async (req, res) => {
     }
 
     const loginToken = jwt.sign(
-      { id: user._id, email: user.email, role: user.role, fullname: user.fullname, name: user.name },
+      { id: user._id, email: user.email, role: user.role, fullname: user.fullname, name: user.name, userType: "ContactUser"},
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
