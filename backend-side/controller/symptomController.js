@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 import Symptom from '../models/SymptomTracker.js';
 import MainUser from '../models/MainUser.js'
+import fetch from 'node-fetch';
 
 export const createSymptom = async (req, res) => {
   try {
@@ -92,5 +93,33 @@ export const getSymptomTrends = async (req, res) => {
   } catch (error) {
     console.error("Error fetching symptom trends:", error);
     res.status(500).json({ message: "Error fetching trends", error });
+  }
+};
+
+export const getAISuggestion = async (req, res) => {
+  try {
+    const { symptoms } = req.body;
+    if (!symptoms || symptoms.length === 0) {
+      return res.status(400).json({ message: "Symptoms are required" });
+    }
+
+    const prompt = `Provide gentle activity recommendations or first-aid advice based on these symptoms: ${symptoms.join(', ')}`;
+
+    const response = await fetch("https://api-inference.huggingface.co/models/google/flan-t5-large", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ inputs: prompt })
+    });
+
+    const result = await response.json();
+    const suggestion = result[0]?.generated_text || "Sorry, no suggestion could be generated.";
+
+    res.json({ suggestion });
+  } catch (error) {
+    console.error("AI suggestion error:", error);
+    res.status(500).json({ message: "Failed to fetch AI suggestion", error });
   }
 };

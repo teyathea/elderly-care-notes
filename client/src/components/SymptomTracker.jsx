@@ -1,24 +1,36 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-} from 'recharts';
-import SymptomModal from './modals/SymptomModal';
-import '../styles/SymptomsTracker.css'
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import SymptomModal from "./modals/SymptomModal";
+import "../styles/SymptomsTracker.css";
 
 export default function SymptomTracker() {
   const [symptoms, setSymptoms] = useState([]);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Modal states
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedSymptomName, setSelectedSymptomName] = useState('');
+  const [selectedSymptomName, setSelectedSymptomName] = useState("");
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = user.role === 'admin';
+  // AI suggestion states
+  const [aiSuggestion, setAiSuggestion] = useState("");
+  const [loadingSuggestion, setLoadingSuggestion] = useState(false);
+  const [showSuggestion, setShowSuggestion] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isAdmin = user.role === "admin";
 
   useEffect(() => {
     fetchSymptoms();
@@ -26,16 +38,16 @@ export default function SymptomTracker() {
 
   async function fetchSymptoms() {
     setLoading(true);
-    setError('');
+    setError("");
     try {
-      const token = localStorage.getItem('userToken');
-      const res = await axios.get('http://localhost:8000/api/symptoms', {
+      const token = localStorage.getItem("userToken");
+      const res = await axios.get("http://localhost:8000/api/symptoms", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSymptoms(res.data);
     } catch (error) {
-      console.error('Error fetching symptoms:', error);
-      setError('Failed to fetch symptoms');
+      console.error("Error fetching symptoms:", error);
+      setError("Failed to fetch symptoms");
     } finally {
       setLoading(false);
     }
@@ -43,23 +55,51 @@ export default function SymptomTracker() {
 
   async function addSymptom() {
     if (!title.trim() || !description.trim()) {
-      alert('Please fill in both Title and Description');
+      alert("Please fill in both Title and Description");
       return;
     }
-    setError('');
+    setError("");
     try {
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem("userToken");
       await axios.post(
-        'http://localhost:8000/api/symptoms',
+        "http://localhost:8000/api/symptoms",
         { name: title.trim(), description: description.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setTitle('');
-      setDescription('');
+      setTitle("");
+      setDescription("");
       fetchSymptoms();
     } catch (error) {
-      console.error('Error adding symptom:', error);
-      setError('Failed to add symptom');
+      console.error("Error adding symptom:", error);
+      setError("Failed to add symptom");
+    }
+  }
+
+  // Fetch AI suggestion based on symptoms
+  async function getAiSuggestion() {
+    setLoadingSuggestion(true);
+    setShowSuggestion(false);
+    setAiSuggestion("");
+    try {
+      const token = localStorage.getItem("userToken");
+      const res = await axios.post(
+        "http://localhost:8000/api/symptoms/ai-suggestion",
+        {
+          symptoms: symptoms.map((s) => s.name),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.data?.suggestion) {
+        setAiSuggestion(res.data.suggestion);
+        setShowSuggestion(true);
+      }
+    } catch (err) {
+      console.error("Error getting AI suggestion:", err);
+      alert("Failed to get AI suggestion");
+    } finally {
+      setLoadingSuggestion(false);
     }
   }
 
@@ -82,17 +122,18 @@ export default function SymptomTracker() {
 
   // Delete symptom (admin only)
   async function deleteSymptom(id) {
-    if (!window.confirm('Are you sure you want to delete this symptom?')) return;
+    if (!window.confirm("Are you sure you want to delete this symptom?"))
+      return;
 
     try {
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem("userToken");
       await axios.delete(`http://localhost:8000/api/symptoms/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchSymptoms();
     } catch (error) {
-      console.error('Failed to delete symptom:', error);
-      alert('Failed to delete symptom');
+      console.error("Failed to delete symptom:", error);
+      alert("Failed to delete symptom");
     }
   }
 
@@ -100,7 +141,7 @@ export default function SymptomTracker() {
     const escapeCsv = (str) => `"${str.replace(/"/g, '""')}"`;
 
     const csvRows = [
-      ['Title', 'Description', 'Timestamp'],
+      ["Title", "Description", "Timestamp"],
       ...symptoms.map((s) => [
         escapeCsv(s.name),
         escapeCsv(s.description),
@@ -108,13 +149,13 @@ export default function SymptomTracker() {
       ]),
     ];
 
-    const csvContent = csvRows.map((r) => r.join(',')).join('\n');
+    const csvContent = csvRows.map((r) => r.join(",")).join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = 'symptoms.csv';
+    link.download = "symptoms.csv";
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -180,6 +221,24 @@ export default function SymptomTracker() {
               onDelete={deleteSymptom}
             />
           )}
+
+          {/* ✅ AI Suggestion Button & Display */}
+          <div className="ai-suggestion-container">
+            <button
+              onClick={getAiSuggestion}
+              disabled={loadingSuggestion}
+              className="ai-button"
+            >
+              {loadingSuggestion ? "Getting advice..." : "Get AI Suggestion"}
+            </button>
+
+            {showSuggestion && (
+              <div className="ai-suggestion-box">
+                <h4>AI Health Suggestion</h4>
+                <p>{aiSuggestion}</p>
+              </div>
+            )}
+          </div>
         </>
       )}
     </section>
