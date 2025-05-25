@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import '../../styles/Global.css'
 
-export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
+export default function UploadMedicalRecordsModal({ onClose, onUpload, canAdd }) {
   const [doctorName, setDoctorName] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
@@ -18,6 +18,11 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!canAdd) {
+      toast.error("You don't have permission to upload medical records");
+      return;
+    }
+
     if (!doctorName || !description || !category || !file) {
       toast.error("Please fill all fields and select a file.");
       return;
@@ -31,6 +36,10 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:8000/api/medicalrecords/upload");
+
+    // Add authorization header
+    const token = localStorage.getItem("userToken");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
     xhr.upload.addEventListener("progress", (e) => {
       if (e.lengthComputable) {
@@ -72,6 +81,23 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
     'Pulmonary', 'Obstetrics and Gynecology', 'Audiology & Vision', 'Oncology Reports', 'Psychiatric Evaluations'
   ];
 
+  if (!canAdd) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
+        <div className="bg-[var(--light)] w-full max-w-lg p-6 rounded-xl shadow-lg">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Upload Medical Record</h2>
+            <button onClick={onClose} className="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+          </div>
+          <p className="text-red-600 text-center">You don't have permission to upload medical records.</p>
+          <div className="flex justify-center mt-4">
+            <button onClick={onClose} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Close</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
       <div className="bg-[var(--light)] w-full max-w-lg p-6 rounded-xl shadow-lg">
@@ -82,7 +108,7 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className=" block font-medium">Doctor’s Name:</label>
+            <label className=" block font-medium">Doctor's Name:</label>
             <input
               type="text"
               className={`w-full border rounded px-3 py-2 mt-1 ${!doctorName && uploadProgress === 0 ? 'border-red-500' : 'border-gray-300'}`}
@@ -125,13 +151,32 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload }) {
             />
           </div>
 
-          <div className="flex justify-end">
+          {uploadProgress > 0 && (
+            <div className="mt-4">
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+              <p className="text-center mt-2">{uploadProgress}% uploaded</p>
+            </div>
+          )}
+
+          <div className="flex justify-end space-x-3 mt-6">
             <button
               type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
               disabled={uploadProgress > 0}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
             >
-              {uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : "Upload"}
+              {uploadProgress > 0 ? "Uploading..." : "Upload"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+            >
+              Cancel
             </button>
           </div>
         </form>

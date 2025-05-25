@@ -7,17 +7,27 @@ const UserPage = () => {
   const [users, setUsers] = useState([]);
   const [isInviteOpen, setInviteOpen] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const [editedName, setEditedName] = useState('');
   const [editedEmail, setEditedEmail] = useState('');
   const [editedRole, setEditedRole] = useState('');
 
-  // Get current user role from localStorage (adjust if your app uses a different method)
+  // Get current user info from localStorage
   const currentUserRole = localStorage.getItem('userRole');
+  const currentUserId = JSON.parse(localStorage.getItem('userInfo'))?.id;
 
   // Determine if current user can edit/add/delete users
   const canEditUsers = currentUserRole !== 'caregiver' && currentUserRole !== 'family';
 
+  // Function to broadcast permission changes
+  const broadcastPermissionChange = () => {
+    const event = new CustomEvent('permissionsChanged', {
+      detail: { timestamp: Date.now() }
+    });
+    window.dispatchEvent(event);
+  };
+  
   const fetchUsers = async () => {
     try {
       const res = await axios.get('http://localhost:8000/api/contactusers', {
@@ -26,6 +36,15 @@ const UserPage = () => {
         },
       });
       setUsers(res.data);
+
+      // Update current user's permissions in localStorage if they exist in the users list
+      const currentUser = res.data.find(user => user._id === currentUserId);
+      if (currentUser) {
+        localStorage.setItem('isContributor', currentUser.isContributor);
+        localStorage.setItem('isViewOnly', currentUser.isViewOnly);
+        // Broadcast the permission change
+        broadcastPermissionChange();
+      }
     } catch (err) {
       console.error('Failed to fetch users', err);
     }
@@ -66,6 +85,13 @@ const UserPage = () => {
           },
         }
       );
+
+      // If the updated user is the current user, update their permissions in localStorage
+      if (id === currentUserId) {
+        localStorage.setItem('isContributor', isContributor);
+        // Broadcast the permission change
+        broadcastPermissionChange();
+      }
     } catch (err) {
       console.error('Failed to update contributor status', err);
       setUsers(prevUsers =>
@@ -98,6 +124,13 @@ const UserPage = () => {
           },
         }
       );
+
+      // If the updated user is the current user, update their permissions in localStorage
+      if (id === currentUserId) {
+        localStorage.setItem('isViewOnly', isViewOnly);
+        // Broadcast the permission change
+        broadcastPermissionChange();
+      }
     } catch (err) {
       console.error('Failed to update view only status', err);
       setUsers(prevUsers =>
@@ -142,7 +175,13 @@ const UserPage = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [refreshTrigger]);
+
+  const handleInviteClose = () => {
+    setInviteOpen(false);
+    // Trigger a refresh when the invite modal closes
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   return (
     <div className="userPage-container">
@@ -150,6 +189,14 @@ const UserPage = () => {
         <button onClick={() => setInviteOpen(true)} className="add-user-button">
           Add User
         </button>
+      )}
+
+      {isInviteOpen && (
+        <UserInvite 
+          isOpen={isInviteOpen} 
+          onClose={handleInviteClose}
+          onUserAdded={fetchUsers}
+        />
       )}
 
       <table className="table">
@@ -270,8 +317,6 @@ const UserPage = () => {
           ))}
         </tbody>
       </table>
-
-      <UserInvite isOpen={isInviteOpen} onClose={() => setInviteOpen(false)} />
     </div>
   );
 };

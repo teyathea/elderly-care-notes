@@ -30,6 +30,8 @@ export default function MedicalRecordsModal({
   onClose,
   onUpdate,
   onDelete,
+  canEdit,
+  canDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -49,16 +51,21 @@ export default function MedicalRecordsModal({
   };
 
   const handleSave = async () => {
-    setIsSaving(true); // Show loading state and disable button
-    try {
-      console.log("Updating record with ID:", record._id);
+    if (!canEdit) {
+      toast.error("You don't have permission to edit records");
+      return;
+    }
 
+    setIsSaving(true);
+    try {
+      const token = localStorage.getItem("userToken");
       const response = await fetch(
         `http://localhost:8000/api/medicalrecords/update/${record._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             description: form.description,
@@ -80,17 +87,26 @@ export default function MedicalRecordsModal({
     } catch (err) {
       console.error("Update error:", err);
       toast.error("Error updating record");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    try {
-      console.log("Deleting record with ID:", record._id);
+    if (!canDelete) {
+      toast.error("You don't have permission to delete records");
+      return;
+    }
 
+    try {
+      const token = localStorage.getItem("userToken");
       const response = await fetch(
         `http://localhost:8000/api/medicalrecords/delete/${record._id}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -185,9 +201,10 @@ export default function MedicalRecordsModal({
             <>
               <button
                 onClick={handleSave}
+                disabled={isSaving}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center"
               >
-                <Save className="w-4 h-4 mr-2" /> Save
+                <Save className="w-4 h-4 mr-2" /> {isSaving ? "Saving..." : "Save"}
               </button>
               <button
                 onClick={() => setIsEditing(false)}
@@ -198,25 +215,28 @@ export default function MedicalRecordsModal({
             </>
           ) : (
             <>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
-              >
-                <Edit className="w-4 h-4 mr-2" /> Edit
-              </button>
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center"
-              >
-                <Trash2 className="w-4 h-4 mr-2" /> Delete
-              </button>
+              {canEdit && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
+                >
+                  <Edit className="w-4 h-4 mr-2" /> Edit
+                </button>
+              )}
+              {canDelete && (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" /> Delete
+                </button>
+              )}
               {record.fileUrl && (
                 <a
                   href={`http://localhost:8000/api/medicalrecords/download/${record._id}`}
                   rel="noopener noreferrer"
                   download
                   className="flex items-center text-blue-600 hover:underline"
-
                 >
                   <Download className="w-4 h-4 mr-2" />
                   <span className="sr-only">Download</span>
