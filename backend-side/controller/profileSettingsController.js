@@ -1,5 +1,6 @@
 import ProfileSetting from "../models/ProfileSettings.js";
 import MainUser from "../models/MainUser.js";
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 /////////////////////
@@ -11,6 +12,7 @@ const getProfileDetails = async (req, res) => {
         const userId = req.user.id  // id from the token, either id, userId or _id, check it in the authentication
 
         const profileDetails = await ProfileSetting.findOne({ userId })
+        .populate('userId', 'fullname email'); // gets the fullname frpm mainuser via populate
 
             if(!profileDetails) {
                 return res.status(404).json({
@@ -40,7 +42,7 @@ const updateProfileDetails = async(req, res) => {
         const userId = req.user.id  
 
         const updateProfile = await ProfileSetting.findOneAndUpdate(
-            { userId },
+            { userId: mongoose.Types.ObjectId(userId)},
             req.body, { new: true, runValidators: true } 
         )
 

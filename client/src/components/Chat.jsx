@@ -9,7 +9,7 @@ const ChatPopup = ({ token, roomId }) => {
   const socketRef = useRef(null);
 
   useEffect(() => {
-    if (!roomId || !isOpen) return;
+    if (!roomId ||  socketRef.current) return;
 
     const socket = io(import.meta.env.VITE_BACKEND_URL, {
       auth: { token }
