@@ -29,6 +29,25 @@ export const createAppointment = async (req, res) => {
   }
 };
 
+// Get upcoming appointments
+export const getUpcomingAppointments = async (req, res) => {
+  try {
+    const now = new Date();
+    const appointments = await Appointment.find({
+      date: { $gte: now },
+      status: 'scheduled'
+    })
+    .sort({ date: 1, time: 1 })
+    .limit(5)
+    .populate('assignedTo', 'fullname email role')
+    .populate('createdBy', 'fullname email role');
+
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching upcoming appointments' });
+  }
+};
+
 // Get all appointments for a specific date
 export const getAppointmentsByDate = async (req, res) => {
   try {

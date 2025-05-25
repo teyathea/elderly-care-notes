@@ -27,6 +27,14 @@ const contactSchema = new mongoose.Schema({
         type: Boolean, 
         default: false
     },
+    isContributor: {
+        type: Boolean,
+        default: false,
+    },
+    isViewOnly: {
+        type: Boolean,
+        default: true,
+    },
 }, { timestamps: true});
 
 const ContactUser = mongoose.model('ContactUser', contactSchema)

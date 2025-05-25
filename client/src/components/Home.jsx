@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useContext, useState } from "react";
 import { NotesContext } from "../context/NotesContext";
+import { useNavigate } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -12,23 +13,41 @@ import {
 } from "recharts";
 
 export default function Home() {
-  const { state, dispatch, fetchAllNotes, fetchUserNotes, capitalizeSentence } =
-    useContext(NotesContext);
+  const navigate = useNavigate();
+  const { state, fetchAllNotes, capitalizeSentence } = useContext(NotesContext);
   const { notes } = state;
   const [symptoms, setSymptoms] = useState([]);
   const [medications, setMedications] = useState([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchAllNotes();
+    // Check user role and redirect accordingly
+    const userRole = localStorage.getItem("userRole");
 
-    const fetchSymptoms = async () => {
+    if (userRole === "admin") {
+      // Admin sees everything, no redirect needed
+      return;
+    } else if (userRole === "caregiver") {
+      navigate("/notesfeed"); // Caregivers primarily work with notes
+    } else if (userRole === "family") {
+      navigate("/medical-records"); // Family members primarily check medical records
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("userToken");
+      if (!token) return;
+
       try {
-        const token = localStorage.getItem("userToken");
-        const res = await axios.get("http://localhost:8000/api/symptoms", {
+        // Fetch symptoms
+        const symptomsRes = await axios.get("http://localhost:8000/api/symptoms", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const symptomCounts = res.data.reduce((acc, item) => {
+        const symptomCounts = symptomsRes.data.reduce((acc, item) => {
           acc[item.name] = (acc[item.name] || 0) + 1;
           return acc;
         }, {});
@@ -39,37 +58,52 @@ export default function Home() {
         }));
 
         setSymptoms(chartData);
-      } catch (error) {
-        console.error("Error fetching symptoms:", error);
-      }
-    };
 
-    const fetchMedications = async () => {
-      try {
-        const token = localStorage.getItem("userToken");
-        const res = await axios.get("http://localhost:8000/api/medications", {
+        // Fetch medications
+        const medsRes = await axios.get("http://localhost:8000/api/medications", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Fetched meds:", res.data);
-        setMedications(res.data);
+        setMedications(medsRes.data);
+
+        // Fetch upcoming appointments
+        const appointmentsRes = await axios.get("http://localhost:8000/api/appointments/upcoming", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUpcomingAppointments(appointmentsRes.data);
+
+        // Fetch notes
+        fetchAllNotes();
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching medications:", error);
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch data");
+        setLoading(false);
       }
     };
 
-    fetchSymptoms();
-    fetchMedications();
-  }, []);
+    fetchData();
+  }, []); // Only run once on mount
 
   const today = new Date()
     .toLocaleDateString("en-US", { weekday: "long" })
     .toLowerCase();
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-600">{error}</div>;
+  }
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Medications */}
-        <div className="border-2 border-black rounded-xl p-4">
+        {/* Medications - Clickable */}
+        <div 
+          className="border-2 border-black rounded-xl p-4 cursor-pointer hover:bg-blue-50 transition-colors"
+          onClick={() => navigate('/medications')}
+        >
           <h2 className="text-orange-400 text-lg font-bold mb-2">
             Meds of the day
           </h2>
@@ -90,34 +124,40 @@ export default function Home() {
           </ul>
         </div>
 
-        {/* Appointments */}
-        <div className="border-2 border-black rounded-xl p-4">
+        {/* Appointments - Clickable */}
+        <div 
+          className="border-2 border-black rounded-xl p-4 cursor-pointer hover:bg-blue-50 transition-colors"
+          onClick={() => navigate('/appointments')}
+        >
           <h2 className="text-orange-400 text-lg font-bold mb-2">
-            Upcoming Appointment
+            Upcoming Appointments
           </h2>
           <ul className="space-y-1">
-            <li className="flex justify-between">
-              <span>Heart Checkup</span>
-              <span>05/19/25</span>
-            </li>
-            <li className="flex justify-between">
-              <span>Ear Checkup</span>
-              <span>05/19/25</span>
-            </li>
-            <li className="flex justify-between">
-              <span>Laboratory</span>
-              <span>05/15/25</span>
-            </li>
-            <li className="flex justify-between">
-              <span>Chest X-ray</span>
-              <span>05/16/25</span>
-            </li>
+            {upcomingAppointments.length === 0 ? (
+              <li>No upcoming appointments.</li>
+            ) : (
+              upcomingAppointments.map((appointment) => (
+                <li key={appointment._id} className="flex justify-between items-start py-1">
+                  <div>
+                    <div className="font-semibold">{appointment.title}</div>
+                    <div className="text-sm text-gray-600">{appointment.location}</div>
+                  </div>
+                  <div className="text-right">
+                    <div>{new Date(appointment.date).toLocaleDateString()}</div>
+                    <div className="text-sm text-gray-600">{appointment.time}</div>
+                  </div>
+                </li>
+              ))
+            )}
           </ul>
         </div>
       </div>
 
-      {/* Notes */}
-      <div className="border-2 flex flex-col border-black text-black rounded-xl p-4 mt-4">
+      {/* Notes - Clickable */}
+      <div 
+        className="border-2 flex flex-col border-black text-black rounded-xl p-4 mt-4 cursor-pointer hover:bg-blue-50 transition-colors"
+        onClick={() => navigate('/notesfeed')}
+      >
         <h2 className="flex justify-center font-semibold mb-2">Notes</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 sm:max-h-80 lg:max-h-96 overflow-y-auto">
           {[...notes]
@@ -135,8 +175,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Symptoms Chart */}
-      <div className="border-2 border-black rounded-xl p-4 mt-4">
+      {/* Symptoms Chart - Clickable */}
+      <div 
+        className="border-2 border-black rounded-xl p-4 mt-4 cursor-pointer hover:bg-blue-50 transition-colors"
+        onClick={() => navigate('/symptom-tracker')}
+      >
         <h2 className="text-orange-400 text-lg font-bold mb-4">
           Symptoms Chart
         </h2>

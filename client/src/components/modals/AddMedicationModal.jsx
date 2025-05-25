@@ -1,14 +1,20 @@
 import { useState } from "react";
 import "../../styles/AddMedicationModal.css";
-
+import { checkPermissions } from '../../utils/permissions';
 
 export default function AddMedicationModal({ onClose, onAdd }) {
   const [medicine, setMedicine] = useState('');
   const [time, setTime] = useState('');
   const [day, setDay] = useState('');
   const [date, setDate] = useState('');
+  const { canAdd } = checkPermissions();
 
   const handleSubmit = async () => {
+    if (!canAdd) {
+      alert("You do not have permission to add medications.");
+      return;
+    }
+
     const token = localStorage.getItem('userToken');
     if (!token) {
       alert("Error: Missing user ID. Please log in again.");
@@ -32,15 +38,30 @@ export default function AddMedicationModal({ onClose, onAdd }) {
         return;
       }
 
-      await response.json();
-      onAdd();
-      onClose();
+      const data = await response.json();
+      if (onAdd) {
+        await onAdd(data.medication);
+      }
 
     } catch (error) {
       console.error("Network error:", error);
       alert("Network error. Please try again.");
     }
   };
+
+  if (!canAdd) {
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <h3 className="modal-title">Permission Denied</h3>
+          <p className="text-center text-red-600 mb-4">You do not have permission to add medications.</p>
+          <div className="modal-actions">
+            <button className="modal-button-secondary" onClick={onClose}>Close</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="modal-overlay">
@@ -52,6 +73,7 @@ export default function AddMedicationModal({ onClose, onAdd }) {
           placeholder="Medicine"
           value={medicine}
           onChange={e => setMedicine(e.target.value)}
+          required
         />
 
         <input
@@ -59,24 +81,41 @@ export default function AddMedicationModal({ onClose, onAdd }) {
           placeholder="Time (e.g. 6:00 AM)"
           value={time}
           onChange={e => setTime(e.target.value)}
+          required
         />
 
-        <input
+        <select
           className="modal-input"
-          placeholder="Day (e.g. Monday)"
           value={day}
           onChange={e => setDay(e.target.value)}
-        />
+          required
+        >
+          <option value="">Select Day</option>
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
+          <option value="Sunday">Sunday</option>
+        </select>
 
         <input
           type="date"
           className="modal-input"
           value={date}
           onChange={e => setDate(e.target.value)}
+          required
         />
 
         <div className="modal-actions">
-          <button className="modal-button-primary" onClick={handleSubmit}>Add</button>
+          <button 
+            className="modal-button-primary" 
+            onClick={handleSubmit}
+            disabled={!medicine || !time || !day || !date}
+          >
+            Add
+          </button>
           <button className="modal-button-secondary" onClick={onClose}>Cancel</button>
         </div>
       </div>
