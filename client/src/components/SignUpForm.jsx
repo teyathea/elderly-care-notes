@@ -42,7 +42,6 @@ export default function SignUpForm({setIsLogin}) {
     return (
         <div className="signupContainer flex flex-col justify-center border-2 border-white rounded-xl p-8 w-150 bg-blue-800/80 backdrop-blur-md shadow-lg">
             <h2 className="text-xl font-bold mb-4 text-center text-white">Sign Up</h2>
-            <h3 className="mb-4 text-white text-center">Welcome to Elderly Care ❤️</h3>
             <form onSubmit={handleSignup} className="space-y-4">
                 <div>
                     <label htmlFor="fullname" className="block text-white mb-1">Full Name</label>

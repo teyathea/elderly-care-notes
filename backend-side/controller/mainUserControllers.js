@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import MainUser from '../models/MainUser.js';
 
 import ProfileSetting from '../models/ProfileSettings.js'; // import schema
+import PatientsDetail from '../models/PatientsDetails.js'; // import associated schema
 
 
 ///////////////////////////////////////
@@ -38,8 +39,13 @@ export const registerAdmin = async (req, res) => {
      // then Create the associated user profile
     await ProfileSetting.create({
       userId: newAdmin._id,
-
+      // fullname: newAdmin.fullname,
+      // email: newAdmin.email
     });
+
+    await PatientsDetail.create({
+      patientId: newAdmin._id, // associate with the admin
+    })
 
     res.status(201).json({ message: 'Admin registered' });
   } catch (error) {

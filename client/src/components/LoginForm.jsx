@@ -68,7 +68,6 @@ export default function LoginForm({onLogin, setIsLogin}) {
     return (
         <form onSubmit={handleLogin} className='flex flex-col justify-center border-2 border-white rounded-xl p-8 w-150 h-110 bg-blue-800/80 backdrop-blur-md shadow-lg'>
             <h2 className="text-xl font-bold mb-4 text-center text-white">Login</h2>
-            <h3 className="mb-4 text-white text-center">Welcome to Elderly Care ❤️</h3>
             {error && (
                 <div className="mb-4 text-red-400 text-center">
                     {error}
@@ -98,10 +97,8 @@ export default function LoginForm({onLogin, setIsLogin}) {
                     required
                 />
             </div>
-            <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                Login
-            </button>
-            <div className="mt-4 text-sm text-white text-center">
+            
+            <div className="mb-4 text-sm text-white text-center">
                 Don't have an account?{' '}
                 <span
                     className="text-blue-300 underline cursor-pointer"
@@ -110,6 +107,9 @@ export default function LoginForm({onLogin, setIsLogin}) {
                     Sign Up
                 </span>
             </div>
+            <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                Login
+            </button>
         </form>
     );
 }

@@ -11,7 +11,8 @@ import medicationRoutes from './routes/medicationRoutes.js';
 import medicalRecordsRoutes from './routes/medicalRecordsRoutes.js';
 import profileSettingsRoutes from './routes/profileSettingsRoutes.js';
 import symptomsRoutes from './routes/symptomRoutes.js';
-import chatRoutes from './routes/chatRoutes.js'
+import chatRoutes from './routes/chatRoutes.js';
+import patientsRoutes from './routes/patientsRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 
 import './jobs/autoDeleteMedications.js'
@@ -52,6 +53,8 @@ app.use('/api/symptoms', symptomsRoutes);
 app.use('/api/profilesettings', profileSettingsRoutes);
 app.use('/api/chatRoom', chatRoutes);
 app.use('/api/appointments', appointmentRoutes);
+
+app.use('/api/patient', patientsRoutes)
 
 // initialize socket.io and pass the server instance
 socketHandler(server);
