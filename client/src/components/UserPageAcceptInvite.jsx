@@ -63,7 +63,10 @@ const AcceptInvite = ({ onLogin }) => {
       );
 
       setPasswordSetMessage("Password set successfully! Redirecting...");
-      if (onLogin) onLogin();
+      
+      // Ensure isLoggedIn state is set to true here before redirecting
+      if (onLogin) onLogin(); // Updates login state in App component
+
       setTimeout(() => navigate("/home"), 1500);
     } catch (error) {
       setPasswordSetMessage(error.response?.data?.message || "Failed to set password.");

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import AddMedicationModal from '../components/modals/AddMedicationModal';
 import '../styles/Medication.css';
+import { checkPermissions } from '../utils/permissions';
 
 export default function MedicationPage() {
   const [meds, setMeds] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { canAdd, canEdit } = checkPermissions();
 
   const fetchMedications = async () => {
     try {
@@ -33,7 +35,17 @@ export default function MedicationPage() {
     fetchMedications();
   }, []);
 
+  const handleAddMedication = async () => {
+    await fetchMedications(); // Refresh the entire list after adding
+    setShowModal(false);
+  };
+
   const toggleTaken = async (medId) => {
+    if (!canEdit) {
+      alert('You do not have permission to mark medications as taken.');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('userToken');
       if (!token) {
@@ -46,6 +58,13 @@ export default function MedicationPage() {
 
       const updatedTaken = !medToToggle.taken;
 
+      // Update the UI immediately for better user experience
+      setMeds(prevMeds =>
+        prevMeds.map(med =>
+          med._id === medId ? { ...med, taken: updatedTaken } : med
+        )
+      );
+
       const res = await fetch(`http://localhost:8000/api/toggle/${medId}`, {
         method: 'PATCH',
         headers: {
@@ -55,13 +74,18 @@ export default function MedicationPage() {
         body: JSON.stringify({ taken: updatedTaken }),
       });
 
-      if (!res.ok) throw new Error('Failed to update medication');
+      if (!res.ok) {
+        // Revert the UI change if the API call fails
+        setMeds(prevMeds =>
+          prevMeds.map(med =>
+            med._id === medId ? { ...med, taken: !updatedTaken } : med
+          )
+        );
+        throw new Error('Failed to update medication');
+      }
 
-      setMeds(prevMeds =>
-        prevMeds.map(med =>
-          med._id === medId ? { ...med, taken: updatedTaken } : med
-        )
-      );
+      // Refresh the list after successful toggle
+      await fetchMedications();
 
     } catch (error) {
       console.error(error);
@@ -81,13 +105,15 @@ export default function MedicationPage() {
     <div className="page-wrapper">
       <div className="container">
         <h2 className="heading">Medications</h2>
-        <button
-          className="add-button"
-          onClick={() => setShowModal(true)}
-          aria-label="Add Medication"
-        >
-          + Add
-        </button>
+        {canAdd && (
+          <button
+            className="add-button"
+            onClick={() => setShowModal(true)}
+            aria-label="Add Medication"
+          >
+            + Add
+          </button>
+        )}
 
         {loading ? (
           <p className="loading-text">Loading medications...</p>
@@ -116,13 +142,15 @@ export default function MedicationPage() {
                         <span className="med-time">
                           {med.time}
                         </span>
-                        <input
-                          type="checkbox"
-                          checked={med.taken || false}
-                          onChange={() => toggleTaken(med._id)}
-                          className="checkbox"
-                          aria-label={`Mark ${med.medicine} as taken`}
-                        />
+                        {canEdit && (
+                          <input
+                            type="checkbox"
+                            checked={med.taken || false}
+                            onChange={() => toggleTaken(med._id)}
+                            className="checkbox"
+                            aria-label={`Mark ${med.medicine} as taken`}
+                          />
+                        )}
                       </div>
                     ))
                 ) : (
@@ -138,7 +166,7 @@ export default function MedicationPage() {
         {showModal && (
           <AddMedicationModal
             onClose={() => setShowModal(false)}
-            onAdd={fetchMedications}
+            onAdd={handleAddMedication}
           />
         )}
       </div>
