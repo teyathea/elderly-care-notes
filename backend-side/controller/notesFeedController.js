@@ -8,7 +8,7 @@ import NotesFeed from "../models/NotesFeed.js";
 const getAllNotesFeed = async (req, res) => {
     try {
         const notes = await NotesFeed.find()
-        console.log(notes)
+        // console.log(notes)
         res.status(200).json(notes)
         
     } catch (error) {
