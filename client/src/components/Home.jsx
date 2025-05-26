@@ -169,6 +169,15 @@ export default function Home() {
                   Title: {note.title}
                 </h3>
                 <p>{capitalizeSentence(note.description)}</p>
+                <div>
+                  {note.created_by && (
+                    <small className="text-black capitalize">
+                      By: {note.created_by.fullname}
+                    </small>
+                  )}
+                </div>
+                
+
                 <small>{new Date(note.date).toLocaleString()}</small>
               </div>
             ))}

@@ -137,8 +137,9 @@ export default function MedicalRecords() {
             <option key={year} value={year}>{year}</option>
           ))}
         </select>
-
-        {canAdd && (
+      </div>
+      
+      {canAdd && (
           <div className="flex justify-end mb-2">
             <button
               onClick={() => setShowUploadModal(true)}
@@ -147,7 +148,6 @@ export default function MedicalRecords() {
             </button>
           </div>
         )}
-      </div>
 
       {/* Records List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

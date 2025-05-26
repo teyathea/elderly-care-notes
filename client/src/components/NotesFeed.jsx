@@ -132,7 +132,7 @@ const NotesFeed = () => {
                 <div className="flex justify-between items-center mb-1">
                   <small>{new Date(note.date).toLocaleString()}</small>
                   {note.created_by && (
-                    <small className="text-blue-200">
+                    <small className="capitalize">
                       By: {note.created_by.fullname}
                     </small>
                   )}
