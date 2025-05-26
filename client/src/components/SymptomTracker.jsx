@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { checkPermissions } from "../utils/permissions";
 import {
   BarChart,
   Bar,
@@ -31,8 +32,8 @@ export default function SymptomTracker() {
   const [loadingSuggestion, setLoadingSuggestion] = useState(false);
   const [showSuggestion, setShowSuggestion] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const isAdmin = user.role === "admin";
+  // Get permissions
+  const { canAdd, canDelete, canView } = checkPermissions();
 
   useEffect(() => {
     fetchSymptoms();
@@ -56,8 +57,13 @@ export default function SymptomTracker() {
   }
 
   async function addSymptom() {
+    if (!canAdd) {
+      setError("You don't have permission to add symptoms");
+      return;
+    }
+
     if (!title.trim() || !description.trim()) {
-      alert("Please fill in both Title and Description");
+      setError("Please fill in both Title and Description");
       return;
     }
     setError("");
@@ -79,6 +85,11 @@ export default function SymptomTracker() {
 
   // Fetch AI suggestion based on symptoms
   async function getAiSuggestion() {
+    if (!canView) {
+      setError("You don't have permission to get AI suggestions");
+      return;
+    }
+
     setLoadingSuggestion(true);
     setShowSuggestion(false);
     setAiSuggestion("");
@@ -99,7 +110,7 @@ export default function SymptomTracker() {
       }
     } catch (err) {
       console.error("Error getting AI suggestion:", err);
-      alert("Failed to get AI suggestion");
+      setError("Failed to get AI suggestion");
     } finally {
       setLoadingSuggestion(false);
     }
@@ -118,12 +129,21 @@ export default function SymptomTracker() {
 
   // Handle bar click to open modal
   function handleBarClick(data) {
+    if (!canView) {
+      setError("You don't have permission to view symptom details");
+      return;
+    }
     setSelectedSymptomName(data.name);
     setModalOpen(true);
   }
 
-  // Delete symptom (admin only)
+  // Delete symptom
   async function deleteSymptom(id) {
+    if (!canDelete) {
+      setError("You don't have permission to delete symptoms");
+      return;
+    }
+
     if (!window.confirm("Are you sure you want to delete this symptom?"))
       return;
 
@@ -135,11 +155,16 @@ export default function SymptomTracker() {
       fetchSymptoms();
     } catch (error) {
       console.error("Failed to delete symptom:", error);
-      alert("Failed to delete symptom");
+      setError("Failed to delete symptom");
     }
   }
 
   function exportToCSV() {
+    if (!canView) {
+      setError("You don't have permission to export data");
+      return;
+    }
+
     const escapeCsv = (str) => `"${str.replace(/"/g, '""')}"`;
 
     const csvRows = [
@@ -162,27 +187,38 @@ export default function SymptomTracker() {
     URL.revokeObjectURL(url);
   }
 
+  if (!canView) {
+    return (
+      <section className="symptom-input-container">
+        <h2>Symptoms</h2>
+        <p className="error-message">You don't have permission to view symptoms.</p>
+      </section>
+    );
+  }
+
   return (
     <section className="symptom-input-container">
       <h2>Symptoms</h2>
 
-      <div className="input-group">
-        <input
-          placeholder="Title (e.g., Fatigue)"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="title-input"
-        />
-
-        <div className="description-button-group">
+      {canAdd && (
+        <div className="input-group">
           <input
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Title (e.g., Fatigue)"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="title-input"
           />
-          <button onClick={addSymptom}>Add</button>
+
+          <div className="description-button-group">
+            <input
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <button onClick={addSymptom}>Add</button>
+          </div>
         </div>
-      </div>
+      )}
 
       {error && <p className="error-message">{error}</p>}
 
@@ -211,14 +247,14 @@ export default function SymptomTracker() {
                 />
               </BarChart>
             </ResponsiveContainer>
-            <button onClick={exportToCSV}>Export Data</button>
+            {canView && <button onClick={exportToCSV}>Export Data</button>}
           </section>
 
           {modalOpen && (
             <SymptomModal
               selectedSymptomName={selectedSymptomName}
               symptoms={symptoms}
-              isAdmin={isAdmin}
+              canDelete={canDelete}
               onClose={() => setModalOpen(false)}
               onDelete={deleteSymptom}
             />
@@ -228,7 +264,7 @@ export default function SymptomTracker() {
           <div className="ai-suggestion-container">
             <button
               onClick={getAiSuggestion}
-              disabled={loadingSuggestion}
+              disabled={loadingSuggestion || !canView}
               className="ai-button"
             >
               {loadingSuggestion ? "Getting advice..." : "Get AI Suggestion"}

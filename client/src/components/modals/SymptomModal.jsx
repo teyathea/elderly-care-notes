@@ -3,7 +3,7 @@ import '../../styles/Global.css';
 export default function SymptomModal({
   selectedSymptomName,
   symptoms,
-  isAdmin,
+  canDelete,
   onClose,
   onDelete,
 }) {
@@ -21,7 +21,7 @@ export default function SymptomModal({
               <li key={s._id ?? `${s.name}-${index}`} className="symptom-item">
                 <p><strong>Description:</strong> {s.description}</p>
                 <p><small>{new Date(s.dateLogged).toLocaleString()}</small></p>
-                {isAdmin && (
+                {canDelete && (
                   <button
                     className="delete-btn"
                     onClick={() => onDelete(s._id)}

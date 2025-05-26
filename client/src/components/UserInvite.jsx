@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import '../styles/UserInvite.css';
 
-const UserInvite = ({ isOpen, onClose }) => {
+const UserInvite = ({ isOpen, onClose, onUserAdded }) => {
   const [formData, setFormData] = useState({ fullname: '', email: '', role: '' });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,6 +27,13 @@ const UserInvite = ({ isOpen, onClose }) => {
       );
       setMessage(res.data.message);
       setFormData({ fullname: '', email: '', role: '' });
+      
+      // Call onUserAdded to refresh the user list
+      if (onUserAdded) {
+        onUserAdded();
+      }
+      
+      // Close the modal after a delay
       setTimeout(onClose, 2000);
     } catch (error) {
       setMessage(error.response?.data?.message || 'Error sending invite');

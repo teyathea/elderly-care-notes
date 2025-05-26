@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import { checkPermissions } from "../../utils/permissions";
 import "../../styles/Global.css";
 
 const AppointmentsModal = ({
@@ -9,6 +11,7 @@ const AppointmentsModal = ({
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -18,6 +21,27 @@ const AppointmentsModal = ({
   });
 
   const modalRef = useRef();
+  
+  // Get permissions
+  const { canAdd, canEdit, canDelete, canView } = checkPermissions();
+
+  useEffect(() => {
+    // Fetch users when component mounts
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/contactusers', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          },
+        });
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     // Handler for clicks outside the modal
@@ -64,6 +88,7 @@ const AppointmentsModal = ({
   };
 
   const handleAddAppointment = () => {
+    if (!canAdd) return;
     const newAppointment = {
       id: Date.now(),
       ...formData,
@@ -74,12 +99,14 @@ const AppointmentsModal = ({
   };
 
   const handleEdit = (appointment) => {
+    if (!canEdit) return;
     setEditingId(appointment.id);
     setFormData({ ...appointment });
     setShowForm(true);
   };
 
   const handleSaveEdit = () => {
+    if (!canEdit) return;
     const updated = appointments.map((app) =>
       app.id === editingId ? { ...formData, id: editingId, date } : app
     );
@@ -88,11 +115,27 @@ const AppointmentsModal = ({
   };
 
   const handleDelete = (id) => {
+    if (!canDelete) return;
     const updated = appointments.filter((app) => app.id !== id);
     setAppointments(updated);
   };
 
   const appointmentsForDate = appointments.filter((app) => app.date === date);
+
+  if (!canView) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
+        <div className="rounded-lg shadow-lg p-6 w-full max-w-3xl relative bg-white">
+          <p className="text-center text-[var(--text)]">
+            You don't have permission to view appointments.
+          </p>
+          <div className="flex justify-center mt-4">
+            <button onClick={onClose}>Close</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
@@ -104,7 +147,7 @@ const AppointmentsModal = ({
           <h2 className="text-xl font-bold text-[var(--text)]">
             Appointments on {date}
           </h2>
-          {!showForm && (
+          {!showForm && canAdd && (
             <button onClick={() => setShowForm(true)}>+ Add</button>
           )}
         </div>
@@ -147,15 +190,19 @@ const AppointmentsModal = ({
               name="assignedTo"
               value={formData.assignedTo}
               onChange={handleChange}
-              placeholder="Assigned To"
               className="w-full p-2 border rounded"
             >
-              <option>Family Member</option>
-              <option>Caregiver</option>
+              <option value="">Select User</option>
+              {users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.fullname} ({user.role})
+                </option>
+              ))}
             </select>
             <div className="flex gap-2 justify-end mt-4">
               <button
                 onClick={editingId ? handleSaveEdit : handleAddAppointment}
+                disabled={!canAdd && !canEdit}
               >
                 Save
               </button>
@@ -186,12 +233,16 @@ const AppointmentsModal = ({
                   <strong>Time:</strong> {app.time}
                 </p>
                 <p>
-                  <strong>Assigned To:</strong> {app.assignedTo}
+                  <strong>Assigned To:</strong> {
+                    users.find(user => user._id === app.assignedTo)?.fullname || 'Unknown User'
+                  } ({users.find(user => user._id === app.assignedTo)?.role || 'Unknown Role'})
                 </p>
-                <div className="flex gap-2 justify-end mt-2">
-                  <button onClick={() => handleEdit(app)}>Edit</button>
-                  <button onClick={() => handleDelete(app.id)}>Delete</button>
-                </div>
+                {(canEdit || canDelete) && (
+                  <div className="flex gap-2 justify-end mt-2">
+                    {canEdit && <button onClick={() => handleEdit(app)}>Edit</button>}
+                    {canDelete && <button onClick={() => handleDelete(app.id)}>Delete</button>}
+                  </div>
+                )}
               </li>
             ))}
           </ul>

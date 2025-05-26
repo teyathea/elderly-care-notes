@@ -1,4 +1,5 @@
 import '../../styles/Global.css';
+import { checkPermissions } from '../../utils/permissions';
 
 const NoteModal = ({
   isEdit,
@@ -7,6 +8,27 @@ const NoteModal = ({
   onSave,
   onClose
 }) => {
+  const { canAdd, canEdit } = checkPermissions();
+
+  // Check permissions
+  if ((isEdit && !canEdit) || (!isEdit && !canAdd)) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
+        <div className="p-6 rounded-xl shadow-lg w-11/12 max-w-md bg-white">
+          <h3 className="text-xl font-semibold mb-4 text-red-600">
+            Permission Denied
+          </h3>
+          <p className="text-center mb-4">
+            You don't have permission to {isEdit ? 'edit' : 'add'} notes.
+          </p>
+          <div className="flex justify-center">
+            <button className="modal-button-secondary" onClick={onClose}>Close</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay">
       <div className="p-6 rounded-xl shadow-lg w-11/12 max-w-md bg-white">

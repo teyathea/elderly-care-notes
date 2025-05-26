@@ -37,12 +37,13 @@ const API_PROFILE_UPDATE_URL = import.meta.env.VITE_PROFILE_UPDATE_URL || "http:
           },
         });
 
-        setProfile(res.data);
+        const data = res.data.data
+        setProfile(data); // sollution to appear in ui
         setFormData({
-          contactNumber: res.data.contactNumber || "",
-          address: res.data.address || "",
-          gender: res.data.gender || "",
-          dateOfBirth: res.data.dateOfBirth ? res.data.dateOfBirth.slice(0,10) : "", // format YYYY-MM-DD for input
+          contactNumber: data.contactNumber || "",
+          address: data.address || "",
+          gender: data.gender || "",
+          dateOfBirth: data.dateOfBirth ? data.dateOfBirth.slice(0,10) : "", // format YYYY-MM-DD for input
         });
       } catch (err) {
         setError(err.response?.data?.message || err.message);
