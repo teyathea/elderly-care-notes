@@ -7,8 +7,6 @@ export default function ProfileSettings() {
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
-    fullname: "",
-    email: "",
     contactNumber: "",
     address: "",
     gender: "",
@@ -39,14 +37,13 @@ const API_PROFILE_UPDATE_URL = import.meta.env.VITE_PROFILE_UPDATE_URL || "http:
           },
         });
 
-        setProfile(res.data);
+        const data = res.data.data
+        setProfile(data); // sollution to appear in ui
         setFormData({
-          fullname: res.data.fullname,
-          email: res.data.email,
-          contactNumber: res.data.contactNumber || "",
-          address: res.data.address || "",
-          gender: res.data.gender || "",
-          dateOfBirth: res.data.dateOfBirth ? res.data.dateOfBirth.slice(0,10) : "", // format YYYY-MM-DD for input
+          contactNumber: data.contactNumber || "",
+          address: data.address || "",
+          gender: data.gender || "",
+          dateOfBirth: data.dateOfBirth ? data.dateOfBirth.slice(0,10) : "", // format YYYY-MM-DD for input
         });
       } catch (err) {
         setError(err.response?.data?.message || err.message);
@@ -142,12 +139,6 @@ const API_PROFILE_UPDATE_URL = import.meta.env.VITE_PROFILE_UPDATE_URL || "http:
       {!editing ? (
         <div className="space-y-4 text-gray-700">
           <div>
-            <span className="font-semibold">Full Name:</span> {profile.fullname}
-          </div >
-          <div>
-            <span className="font-semibold">Email:</span> {profile.email}
-          </div >
-          <div>
             <span className="font-semibold">Contact Number:</span> {profile.contactNumber || "N/A"}
           </div>
           <div>
@@ -159,38 +150,15 @@ const API_PROFILE_UPDATE_URL = import.meta.env.VITE_PROFILE_UPDATE_URL || "http:
           <div>
             <span className="font-semibold">Date of Birth:</span> {profile.dateOfBirth?.slice(0,10) || "N/A"}
           </div>
-          <button onClick={() => setEditing(true)} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" >
+          <button
+            onClick={() => setEditing(true)}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
             Edit Profile
           </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="fullname"
-              value={formData.fullname}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500"
-            />
-          </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Contact Number
