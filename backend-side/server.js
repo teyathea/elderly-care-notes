@@ -11,13 +11,9 @@ import medicationRoutes from './routes/medicationRoutes.js';
 import medicalRecordsRoutes from './routes/medicalRecordsRoutes.js';
 import profileSettingsRoutes from './routes/profileSettingsRoutes.js';
 import symptomsRoutes from './routes/symptomRoutes.js';
-<<<<<<< HEAD
 import chatRoutes from './routes/chatRoutes.js';
 import patientsRoutes from './routes/patientsRoutes.js';
-=======
-import chatRoutes from './routes/chatRoutes.js'
 import appointmentRoutes from './routes/appointmentRoutes.js';
->>>>>>> main
 
 import './jobs/autoDeleteMedications.js'
 import socketHandler from './socket/socket.js';

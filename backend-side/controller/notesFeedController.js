@@ -8,15 +8,9 @@ import NotesFeed from "../models/NotesFeed.js";
 const getAllNotesFeed = async (req, res) => {
     try {
         const notes = await NotesFeed.find()
-<<<<<<< HEAD
-        // console.log(notes)
-        res.status(200).json(notes)
-        
-=======
             .populate('created_by', 'fullname email')
             .sort({ date: -1 });
         res.status(200).json(notes);
->>>>>>> main
     } catch (error) {
         res.status(500).json({
             message: "Error Fetching notes",
