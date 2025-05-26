@@ -110,7 +110,7 @@ export default function PatientsDetails() {
       alert ("You don't have permission to update patient details");
       return
     }
-    
+
     setLoading(true);
     setError(null);
     console.log("Fetching patients profile...");
@@ -144,7 +144,7 @@ export default function PatientsDetails() {
 
       {!editing ? (
         <div className="space-y-4 text-gray-700">
-          <div><span className="font-semibold">Full Name:</span> {profile.patientFullName || "N/A"}</div>
+          <div><span className="font-semibold capitalize">Full Name:</span> {profile.patientFullName || "N/A"}</div>
           <div><span className="font-semibold">Age:</span> {profile.age || "N/A"}</div>
           <div><span className="font-semibold">Gender:</span> {profile.gender || "N/A"}</div>
           <div><span className="font-semibold">Date of Birth:</span> {profile.dateOfBirth ? profile.dateOfBirth.slice(0, 10) : "N/A"}</div>
