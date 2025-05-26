@@ -11,7 +11,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import SymptomModal from "./modals/SymptomModal";
+import ReactMarkdown from "react-markdown";
 import "../styles/SymptomsTracker.css";
+import "../styles/Global.css";
 
 export default function SymptomTracker() {
   const [symptoms, setSymptoms] = useState([]);
@@ -222,7 +224,7 @@ export default function SymptomTracker() {
             />
           )}
 
-          {/* ✅ AI Suggestion Button & Display */}
+          {/* AI Suggestion Button & Display */}
           <div className="ai-suggestion-container">
             <button
               onClick={getAiSuggestion}
@@ -233,9 +235,9 @@ export default function SymptomTracker() {
             </button>
 
             {showSuggestion && (
-              <div className="ai-suggestion-box">
-                <h4>AI Health Suggestion</h4>
-                <p>{aiSuggestion}</p>
+              <div className="ai-suggestion-box prose prose-sm">
+                <h4 className="text-lg font-semibold mb-3 text-blue-600">💡 AI Health Suggestion</h4>
+                <ReactMarkdown>{aiSuggestion}</ReactMarkdown>
               </div>
             )}
           </div>
