@@ -11,6 +11,7 @@
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.9.0",
     "firebase": "^11.8.0",
@@ -19,6 +20,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
+    "react-markdown": "^10.1.0",
     "react-router": "^7.6.0",
     "react-router-dom": "^7.6.0",
     "react-select": "^5.10.1",

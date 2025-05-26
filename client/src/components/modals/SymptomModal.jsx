@@ -1,3 +1,5 @@
+import '../../styles/Global.css';
+
 export default function SymptomModal({
   selectedSymptomName,
   symptoms,
