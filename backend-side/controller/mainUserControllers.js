@@ -36,19 +36,29 @@ export const registerAdmin = async (req, res) => {
 // (e.g., in a separate UserProfile model)
 //////////////////////////////////////////////////////////////
 
-     // then Create the associated user profile
+ try {
     await ProfileSetting.create({
       userId: newAdmin._id,
-      // fullname: newAdmin.fullname,
-      // email: newAdmin.email
     });
+    console.log("✅ ProfileSetting created");
+  } catch (e) {
+    console.error("❌ Error creating ProfileSetting:", e);
+  }
 
+  try {
     await PatientsDetail.create({
-      patientId: newAdmin._id, // associate with the admin
-    })
+      patientId: newAdmin._id,
+    });
+    console.log("✅ PatientsDetail created");
+  } catch (e) {
+    console.error("❌ Error creating PatientsDetail:", e);
+  }
+
 
     res.status(201).json({ message: 'Admin registered' });
   } catch (error) {
+    console.error("❌ Error creating PatientsDetail:", error);
+
     res.status(500).json({ message: 'Server error' });
   }
 };

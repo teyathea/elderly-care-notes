@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { checkPermissions } from '../utils/permissions';
+
 
 export default function PatientsDetails() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(false);
+  const {canEdit} = checkPermissions();
+
 
   const [formData, setFormData] = useState({
     patientFullName: "",
@@ -101,6 +105,12 @@ export default function PatientsDetails() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!canEdit){
+      alert ("You don't have permission to update patient details");
+      return
+    }
+    
     setLoading(true);
     setError(null);
     console.log("Fetching patients profile...");
@@ -153,8 +163,15 @@ export default function PatientsDetails() {
           </div>
 
           <button
-            onClick={() => setEditing(true)}
+            onClick={() => {
+              if (!canEdit) {
+                alert("You don't have permission to edit patient details");
+                return;
+              }
+              setEditing(true);
+            }}
             className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            disabled={!canEdit}
           >
             Edit Profile
           </button>
