@@ -165,15 +165,18 @@ export default function MedicalRecords() {
                 color: "white",
               }}
             >
-              <p className="font-medium text-lg">{record.description}</p>
-              <p className="text-sm text-gray-600">Doctor: {record.doctorName}</p>
-              <p className="text-sm text-gray-600">Category: {record.category}</p>
-              <p className="text-sm text-gray-600">Uploaded: {new Date(record.uploadAt).toLocaleString()}</p>
+              <div className="text-white">
+                <p className="font-medium text-lg">{record.description}</p>
+                <p className="text-sm">Doctor: {record.doctorName}</p>
+                <p className="text-sm">Category: {record.category}</p>
+                <p className="text-sm ">Uploaded: {new Date(record.uploadAt).toLocaleString()}</p>
+              </div>
+              
               {record.fileUrl && (
                 <div className="text-sm mt-2">
                   <a
                     href={`http://localhost:8000/api/medicalrecords/download/${record._id}`}
-                    className="text-blue-600 hover:underline"
+                    className="text-white hover:underline hover:text-blue-950"
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent opening the modal when clicking download
                     }}

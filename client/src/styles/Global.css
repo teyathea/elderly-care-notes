@@ -54,5 +54,5 @@ button:hover {
 }
 
 label {
-  @apply !text-white
+  @apply !text-black
 }

@@ -17,8 +17,9 @@ const patientsdetailsSchema = new Schema({
     },
     gender: {
         type: String,
-        default: "",
-        enum: ['Female', 'Male', 'Other']
+        enum: ['Female', 'Male', 'Other', null ],
+        default: null,
+
     },
     dateOfBirth: {
         type: Date,
@@ -26,8 +27,9 @@ const patientsdetailsSchema = new Schema({
     },
     bloodtype: {
         type: String,
-        default: "",
-        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', null],
+        default: null,
+
     },
     weight: {
         type: Number,
