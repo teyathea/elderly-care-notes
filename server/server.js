@@ -53,7 +53,7 @@ try {
 app.use('/api/mainusers', mainUserRoutes);
 app.use('/api/contactusers', contactUserRoutes);
 app.use('/api/notesfeed', notesFeedRoutes);
-app.use('/api', medicationRoutes);
+app.use('/api/medications', medicationRoutes);
 app.use('/api/medicalrecords', medicalRecordsRoutes);
 app.use('/api/symptoms', symptomsRoutes);
 app.use('/api/profilesettings', profileSettingsRoutes);
