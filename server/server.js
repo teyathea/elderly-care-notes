@@ -24,9 +24,15 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+// allowed origins for CORS
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:5174',
+  'https://elderly-care-notes.netlify.app',
+];
+
 // Enable CORS with specific options
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5174',
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
