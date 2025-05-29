@@ -25,7 +25,7 @@ export default function SignUpForm({setIsLogin}) {
             return;
         }
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/mainusers/register`, {
+            const response = await axios.post(`${import.meta.env.VITE_REGISTER_URL}/api/mainusers/register`, {
                 fullname: formData.fullname,
                 email: formData.email,
                 password: formData.password

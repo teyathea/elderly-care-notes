@@ -13,7 +13,7 @@ export default function LoginForm({onLogin, setIsLogin}) {
         try {
             // First try admin login
             try {
-                const adminResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/mainusers/login`, {
+                const adminResponse = await axios.post(`${import.meta.env.VITE_LOGIN_URL}/api/mainusers/login`, {
                     email,
                     password,
                 });
