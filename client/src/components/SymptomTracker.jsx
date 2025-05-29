@@ -70,7 +70,7 @@ export default function SymptomTracker() {
     try {
       const token = localStorage.getItem("userToken");
       await axios.post(
-        `http://localhost:8000/api/symptoms`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/symptoms`,
         { name: title.trim(), description: description.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
