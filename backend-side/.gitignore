@@ -1,1 +1,5 @@
-node_modules
+# backend-side/.gitignore
+node_modules/
+.env
+logs/
+*.log
