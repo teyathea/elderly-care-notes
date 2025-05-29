@@ -60,7 +60,7 @@ export default function Home() {
         setSymptoms(chartData);
 
         // Fetch medications
-        const medsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/medications`, {
+        const medsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/medications`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMedications(medsRes.data);
