@@ -20,7 +20,7 @@ export default function MedicalRecords() {
 
   // Fetch records from the API when the component adds
   const fetchRecords = () => {
-    fetch("http://localhost:8000/api/medicalrecords/getAllRecords", {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/medicalrecords/getAllRecords`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
       },
@@ -175,7 +175,7 @@ export default function MedicalRecords() {
               {record.fileUrl && (
                 <div className="text-sm mt-2">
                   <a
-                    href={`http://localhost:8000/api/medicalrecords/download/${record._id}`}
+                    href={`${import.meta.env.VITE_BACKEND_URL}/api/medicalrecords/download/${record._id}`}
                     className="text-white hover:underline hover:text-blue-950"
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent opening the modal when clicking download

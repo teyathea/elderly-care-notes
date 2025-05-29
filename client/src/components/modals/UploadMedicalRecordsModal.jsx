@@ -35,7 +35,7 @@ export default function UploadMedicalRecordsModal({ onClose, onUpload, canAdd })
     formData.append("category", category);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8000/api/medicalrecords/upload");
+    xhr.open("POST", `${import.meta.env.VITE_BACKEND_URL}/api/medicalrecords/upload`);
 
     // Add authorization header
     const token = localStorage.getItem("userToken");

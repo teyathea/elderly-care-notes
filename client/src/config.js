@@ -1,5 +1,5 @@
 export const config = {
-  BACKEND_URL: 'http://localhost:8000',
+  BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
   SOCKET_OPTIONS: {
     transports: ['websocket', 'polling'],
     reconnection: true,

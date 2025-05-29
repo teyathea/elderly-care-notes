@@ -30,10 +30,10 @@ export default function PatientsDetails() {
   });
 
   const API_PATIENT_URL =
-    import.meta.env.VITE_PATIENT_URL || "http://localhost:8000/api/patient/getdetails";
+    import.meta.env.VITE_PATIENT_URL || `${import.meta.env.VITE_BACKEND_URL}/api/patient/getdetails`;
 
   const API_PATIENT_DETAILS_UPDATE_URL =
-    import.meta.env.VITE_PATIENT_DETAILS_UPDATE_URL || "http://localhost:8000/api/patient/updatedetails";
+    import.meta.env.VITE_PATIENT_DETAILS_UPDATE_URL || `${import.meta.env.VITE_BACKEND_URL}/api/patient/updatedetails`;
 
   useEffect(() => {
     const fetchPatient = async () => {

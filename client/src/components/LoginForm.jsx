@@ -13,7 +13,7 @@ export default function LoginForm({onLogin, setIsLogin}) {
         try {
             // First try admin login
             try {
-                const adminResponse = await axios.post('http://localhost:8000/api/mainusers/login', {
+                const adminResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/mainusers/login`, {
                     email,
                     password,
                 });
@@ -36,7 +36,7 @@ export default function LoginForm({onLogin, setIsLogin}) {
             } catch (adminError) {
                 // If admin login fails, try family/caregiver login
                 if (adminError.response?.status === 400) {
-                    const contactResponse = await axios.post('http://localhost:8000/api/contactusers/login', {
+                    const contactResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/contactusers/login'`, {
                         email,
                         password,
                     });

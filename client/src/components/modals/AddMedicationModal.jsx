@@ -22,7 +22,7 @@ export default function AddMedicationModal({ onClose, onAdd }) {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/medications', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/medications`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

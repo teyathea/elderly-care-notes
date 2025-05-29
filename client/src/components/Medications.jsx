@@ -15,7 +15,7 @@ export default function MedicationPage() {
       const token = localStorage.getItem('userToken');
       if (!token) throw new Error('User not logged in');
 
-      const res = await fetch('http://localhost:8000/api/medications', {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/medications`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
 
@@ -65,7 +65,7 @@ export default function MedicationPage() {
         )
       );
 
-      const res = await fetch(`http://localhost:8000/api/toggle/${medId}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/toggle/${medId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

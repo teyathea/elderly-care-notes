@@ -21,7 +21,7 @@ const UserInvite = ({ isOpen, onClose, onUserAdded }) => {
     try {
       const token = localStorage.getItem('userToken');
       const res = await axios.post(
-        'http://localhost:8000/api/contactusers/user-invite',
+        `${import.meta.env.VITE_BACKEND_URL}/api/contactusers/user-invite`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

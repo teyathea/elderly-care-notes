@@ -44,7 +44,7 @@ export default function SymptomTracker() {
     setError("");
     try {
       const token = localStorage.getItem("userToken");
-      const res = await axios.get("http://localhost:8000/api/symptoms", {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/symptoms`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSymptoms(res.data);
@@ -70,7 +70,7 @@ export default function SymptomTracker() {
     try {
       const token = localStorage.getItem("userToken");
       await axios.post(
-        "http://localhost:8000/api/symptoms",
+        `http://localhost:8000/api/symptoms`,
         { name: title.trim(), description: description.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -96,7 +96,7 @@ export default function SymptomTracker() {
     try {
       const token = localStorage.getItem("userToken");
       const res = await axios.post(
-        "http://localhost:8000/api/symptoms/ai-suggestion",
+        `${import.meta.env.VITE_BACKEND_URL}/api/symptoms/ai-suggestion`,
         {
           symptoms: symptoms.map((s) => s.name),
         },
@@ -149,7 +149,7 @@ export default function SymptomTracker() {
 
     try {
       const token = localStorage.getItem("userToken");
-      await axios.delete(`http://localhost:8000/api/symptoms/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/symptoms/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchSymptoms();

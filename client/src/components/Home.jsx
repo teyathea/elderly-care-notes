@@ -43,7 +43,7 @@ export default function Home() {
 
       try {
         // Fetch symptoms
-        const symptomsRes = await axios.get("http://localhost:8000/api/symptoms", {
+        const symptomsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/symptoms`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -60,13 +60,13 @@ export default function Home() {
         setSymptoms(chartData);
 
         // Fetch medications
-        const medsRes = await axios.get("http://localhost:8000/api/medications", {
+        const medsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/medications`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMedications(medsRes.data);
 
         // Fetch upcoming appointments
-        const appointmentsRes = await axios.get("http://localhost:8000/api/appointments/upcoming", {
+        const appointmentsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/appointments/upcoming`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUpcomingAppointments(appointmentsRes.data);

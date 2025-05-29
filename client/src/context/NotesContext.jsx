@@ -20,7 +20,7 @@ export function NotesProvider({ children }) {
             const token = localStorage.getItem('userToken');
             if (!token) return;
             
-            const response = await axios.get('http://localhost:8000/api/notesfeed/allnotes', {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/notesfeed/allnotes`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -40,7 +40,7 @@ export function NotesProvider({ children }) {
             const token = localStorage.getItem('userToken');
             if (!token) return;
             
-            const response = await axios.get('http://localhost:8000/api/notesfeed/allusernotes', {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/notesfeed/allusernotes`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -78,7 +78,7 @@ export function NotesProvider({ children }) {
     const addNotesToDb = async (noteData) => {
         try {
             const token = localStorage.getItem('userToken') // gets the token from local storage
-            const response = await axios.post('http://localhost:8000/api/notesfeed/addnote', noteData, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/notesfeed/addnote`, noteData, {
                 headers: {
                     Authorization:`Bearer ${token}`,
                 }
@@ -97,7 +97,7 @@ export function NotesProvider({ children }) {
     const deleteNotesToDb = async (noteId) => {
         try {
             const token = localStorage.getItem('userToken');
-            await axios.delete(`http://localhost:8000/api/notesfeed/delete/${noteId}`, {
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/notesfeed/delete/${noteId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -117,7 +117,7 @@ export function NotesProvider({ children }) {
         try {
             const token = localStorage.getItem('userToken');
             const response = await axios.put(
-                `http://localhost:8000/api/notesfeed/update/${noteData._id}`, 
+                `${import.meta.env.VITE_BACKEND_URL}/api/notesfeed/update/${noteData._id}`, 
                 noteData,
                 {
                     headers: {

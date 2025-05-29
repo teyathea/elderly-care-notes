@@ -60,7 +60,7 @@ export default function MedicalRecordsModal({
     try {
       const token = localStorage.getItem("userToken");
       const response = await fetch(
-        `http://localhost:8000/api/medicalrecords/update/${record._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/medicalrecords/update/${record._id}`,
         {
           method: "PUT",
           headers: {
@@ -101,7 +101,7 @@ export default function MedicalRecordsModal({
     try {
       const token = localStorage.getItem("userToken");
       const response = await fetch(
-        `http://localhost:8000/api/medicalrecords/delete/${record._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/medicalrecords/delete/${record._id}`,
         {
           method: "DELETE",
           headers: {
@@ -233,7 +233,7 @@ export default function MedicalRecordsModal({
               )}
               {record.fileUrl && (
                 <a
-                  href={`http://localhost:8000/api/medicalrecords/download/${record._id}`}
+                  href={`${import.meta.env.VITE_BACKEND_URL}/api/medicalrecords/download/${record._id}`}
                   rel="noopener noreferrer"
                   download
                   className="flex items-center text-blue-600 hover:underline"
